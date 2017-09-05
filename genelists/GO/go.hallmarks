@@ -1,0 +1,17 @@
+sh go.curl "Resisting_cell_death" "GO:0012501,GO:0043067"
+sh go.curl "Genome_instability" "GO:0006281,GO:0031570,GO:0045005,GO:0006282"
+
+#Broaden to all metabolism GO:0008152,
+# sh go.curl "Reprogramming_energy_metabolism" "GO:0006006,GO:0046323,GO:0006096,GO:0071456"
+sh go.curl "Reprogramming_energy_metabolism" "GO:0008152,0006006,GO:0046323,GO:0006096,GO:0071456"
+
+sh go.curl "Evading_immune_destruction" "GO:0006955,GO:0002418,GO:0002837,GO:0020012,GO:0006897"
+
+# Broaden the scope to all vasculature development add in GO:0001944
+# sh go.curl "Sustained_angiogenesis" "GO:0001944,GO:0001525,GO:0045765,GO:0001570,GO:2001212,GO:0008015"
+
+sh go.curl "Evading_growth_suppressors" "GO:0009968,GO:0008285,GO:0030308,GO:0045786,GO:0051782"
+sh go.curl "Replicative_immortality" "GO:0051276,GO:0090398,GO:0032200,GO:0000723,GO:0032204,GO:0001302,GO:1900062,GO:2000772"
+sh go.curl "Tumor-promoting_inflammation" "GO:0006954,GO:0002367,GO:0002718,GO:0042060,GO:0061041,GO:0050727,GO:0042533"
+sh go.curl "Sustaining_proliferative_signaling" "GO:0008283,GO:0016049,GO:0007049,GO:0051301,GO:0008284,GO:0030307,GO:0045787,GO:0051781"
+sh go.curl "Tissue_invasion_and_metastasis" "GO:0007155,GO:0001837,GO:0016477,GO:0030155,GO:0030030,GO:0030036,GO:0030030,GO:0034330,GO:0042330,GO:0007163"

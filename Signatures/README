@@ -1,0 +1,10 @@
+This folder contains the code to generate the hallmark signature from the genes specified in the genelists folder.
+
+MapControlToDiseaseTissue - contains the mapping from control tissue to disease tissue.
+
+ReferenceData/  is the collection of reference data imported from other sites
+
+
+bin/ contains scripts and programs to process the data
+bin/ProcessSamples.py - opens the reference data and processes it into lists
+
