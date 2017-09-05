@@ -1,0 +1,81 @@
+table1 = [
+    { "name":"Sustaining proliferative signaling", "ngenes":343, "npathways":50, "go_terms":[ 
+        {"go_id":"GO:0008283", "human_readable": "cell proliferation"},
+        {"go_id":"GO:0016049", "human_readable": "cell growth"},
+        {"go_id":"GO:0007049", "human_readable": "cell cycle"},
+        {"go_id":"GO:0051301", "human_readable": "cell division"},
+        {"go_id":"GO:0008284", "human_readable": "positive regulation of cell proliferation"},
+        {"go_id":"GO:0030307", "human_readable": "positive regulation of cell growth"},
+        {"go_id":"GO:0045787", "human_readable": "positive regulation of cell cycle"},
+        {"go_id":"GO:0051781", "human_readable": "positive regulation of cell division"}
+        ]},
+    { "name":"Evading growth suppressors", "ngenes":182, "npathways":13, "go_terms":[
+        {"go_id":"GO:0009968", "human_readable": "negative regulation of signal transduction"},
+        {"go_id":"GO:0008285", "human_readable": "negative regulation of cell proliferation"},
+        {"go_id":"GO:0030308", "human_readable": "negative regulation of cell growth"},
+        {"go_id":"GO:0045786", "human_readable": "negative regulation of cell cycle"},
+        {"go_id":"GO:0051782", "human_readable": "negative regulation of cell division"}
+        ]},
+    { "name":"Resisting cell death", "ngenes":404, "npathways":57, "go_terms":[ 
+        {"go_id":"GO:0012501", "human_readable": "programmed cell death"},
+        {"go_id":"GO:0043067", "human_readable": "regulation of programmed cell death"}
+        ]},
+    { "name":"Replicative immortality", "ngenes":2, "npathways":1, "go_terms":[
+        {"go_id":"GO:0090398", "human_readable": "cellular senescence"},
+        {"go_id":"GO:0032200", "human_readable": "telomere organization"},
+        {"go_id":"GO:0000723", "human_readable": "telomere maintenance"},
+        {"go_id":"GO:0032204", "human_readable": "regulation of telomere maintenance"},
+        {"go_id":"GO:0001302", "human_readable": "replicative cell aging"},
+        {"go_id":"GO:1900062", "human_readable": "regulation of replicative cell aging"},
+        {"go_id":"GO:2000772", "human_readable": "regulation of cellular senescence"}
+        ]},
+    { "name":"Sustained angiogenesis", "ngenes":105, "npathways":12, "go_terms":[
+        {"go_id":"GO:0001525", "human_readable": "angiogenesis"},
+        {"go_id":"GO:0045765", "human_readable": "regulation of angiogenesis"},
+        {"go_id":"GO:0001570", "human_readable": "vasculogenesis"},
+        {"go_id":"GO:2001212", "human_readable": "regulation of vasculogenesis"},
+        {"go_id":"GO:0008015", "human_readable": "blood circulation"}
+        ]},
+    { "name":"Tissue invasion and metastasis", "ngenes":614, "npathways":82, "go_terms":[
+        {"go_id":"GO:0007155", "human_readable": "cell adhesion"},
+        {"go_id":"GO:0001837", "human_readable": "epithelial-to-mesenchymal transition"},
+        {"go_id":"GO:0016477", "human_readable": "cell migration"},
+        {"go_id":"GO:0030155", "human_readable": "regulation of cell adhesion"},
+        {"go_id":"GO:0030030", "human_readable": "cell projection organization"},
+        {"go_id":"GO:0030036", "human_readable": "actin cytoskeleton organization"},
+        {"go_id":"GO:0030030", "human_readable": "cell projection organization"},
+        {"go_id":"GO:0034330", "human_readable": "cell junction organization"},
+        {"go_id":"GO:0042330", "human_readable": "taxis"},
+        {"go_id":"GO:0007163", "human_readable": "establishment or maintenance of cell polarity"}
+        ]},
+    { "name":"Genome instability", "ngenes":124, "npathways":7, "go_terms":[
+        {"go_id":"GO:0006281", "human_readable": "DNA repair"},
+        {"go_id":"GO:0031570", "human_readable": "DNA integrity checkpoint"},
+        {"go_id":"GO:0045005", "human_readable": "maintenance of fidelity involved in DNA-dependent DNA replication"},
+        {"go_id":"GO:0006282", "human_readable": "regulation of DNA repair"}
+        ]},
+    { "name":"Tumor-promoting inflammation", "ngenes":84, "npathways":9, "go_terms":[
+        {"go_id":"GO:0006954", "human_readable": "inflammatory response"},
+        {"go_id":"GO:0002367", "human_readable": "cytokine production involved in immune response"},
+        {"go_id":"GO:0002718", "human_readable": "regulation of cytokine production involved in immune response"},
+        {"go_id":"GO:0042060", "human_readable": "wound healing"},
+        {"go_id":"GO:0061041", "human_readable": "regulation of wound healing"},
+        {"go_id":"GO:0050727", "human_readable": "regulation of inflammatory response"},
+        {"go_id":"GO:0042533", "human_readable": "tumor necrosis factor biosynthetic process"}
+        ]},
+    { "name":"Reprogramming energy metabolism", "ngenes":8, "npathways":2, "go_terms":[
+        {"go_id":"GO:0006006", "human_readable": "glucose metabolic process"},
+        {"go_id":"GO:0046323", "human_readable": "glucose import"},
+        {"go_id":"GO:0006096", "human_readable": "glycolysis"},
+        {"go_id":"GO:0071456", "human_readable": "cellular response to hypoxia"}
+        ]},
+    { "name":"Evading immune destruction", "ngenes":150, "npathways":19, "go_terms":[
+        {"go_id":"GO:0006955", "human_readable": "immune response"},
+        {"go_id":"GO:0002418", "human_readable": "immune response to tumor cells"},
+        {"go_id":"GO:0002837", "human_readable": "regulation of immune response to tumor cells"},
+        {"go_id":"GO:0020012", "human_readable": "evasion or tolerance of host immune response"},
+        {"go_id":"GO:0006897", "human_readable": "endocytosis"}
+        ]},
+    { "name":"Other", "ngenes":1047, "npathways":142, "go_terms":[
+        ]}
+];
