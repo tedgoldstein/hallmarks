@@ -2,7 +2,7 @@
 s='Models'
 t='tmp'
 
-i='../genelists/GO/data/hallmarks.genes'
+i='../GeneLists/data/hallmarks.genes'
 
 mkdir -p $s $t
 
