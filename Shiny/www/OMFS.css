@@ -1,0 +1,39 @@
+.table-cell-wrapper {
+}
+.table-cell {
+}
+
+
+.shiny-progress {
+  top: 0% !important;
+  left: 0% !important;
+}
+.CancerDiv {
+    position: relative;
+    display: inline-block;
+}
+
+.drop {
+  cursor: pointer;
+  display: block;
+  background: #090;
+}
+
+input[type="checkbox"]  {
+ display: none; /* hide the checkboxes */
+}
+
+input +.drop +  div
+
+{
+  display:none;
+}
+.drop:after {
+  content:'▼';
+  }
+:checked  + .drop:after {
+  content:'▲';
+  }
+input:checked + .drop + div{
+  display:block;
+}

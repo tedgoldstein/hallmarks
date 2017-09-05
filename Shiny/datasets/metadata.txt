@@ -1,0 +1,8 @@
+PMID	Cancer	Study_Title	BioProject	GEO	File
+26091037	Colon Adenocarcinoma	Apc Restoration Promotes Cellular Differentiation and Reestablishes Crypt Homeostasis in Colorectal Cancer	PRJNA279201	GSE67186	LOWE_2017_colon_adenocarcinoma.scores.txt
+27016502	Acute Myeloid Leukemia	DNMT3A Haploinsufficiency Transforms FLT3ITD Myeloproliferative Disease into a Rapid, Spontaneous, and Fully Penetrant Acute Myeloid Leukemia	PRJNA287970,PRJNA311724	GSE70235,GSE77849,GSE77847,GSE77849,GSE77846	GRIMES_2016_acute_myeloid_leukemia.scores.txt
+27150038	Lung Adenocarcinoma	An Arntl2-Driven Secretome Enables Lung Adenocarcinoma Metastatic Self-Sufficiency	PRJNA295388	GSE72942	WINSLOW_2016_lung_adenocarcinoma.scores.txt
+26585233	Low Grade Glioma	RNA Sequencing of Tumor-Associated Microglia Reveals Ccl5 as a Stromal Chemokine Critical for Neurofibromatosis-1 Glioma Growth	PRJNA275242	GSE65831	N/A
+27149990	Breast  Cancer	Genomic profiling of murine mammary tumors identifies potential personalized drug targets for p53 deficient mammary cancers	PRJNA247955	N/A	N/A
+28191885	Lung Adenocarcinoma	Molecular definition of a metastatic lung cancer state reveals a targetable CD109â€“Janus kinaseâ€“Stat axis	PRJNA329195,PRJNA329195	GSE84447,GSE84448	N/A
+UCSF1	Prostate	West Coast Dream Team			WCDT_Prostate-Aggregate.txt
