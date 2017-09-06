@@ -15,10 +15,10 @@ hallmark_columns = c(
     "Sustained_angiogenesis",
     "Sustaining_proliferative_signaling",
     "Tissue_invasion_and_metastasis",
-    "Tumor_promoting_inflammation")
+    "Tumor.promoting_inflammation")
 
 legend_columns = c(
-     "BioSample.ID",
+     "Biosample.ID",
      "Type",
      "Subtype", 
      "Species", 
@@ -26,6 +26,7 @@ legend_columns = c(
      "Cohort", 
      "Biosample.Name", 
      "Biosample.Description" )
+# ImmPort.Study.ID	PubMed	Study.Title	PI	Biosample.ID	Experiment.ID	Cohort	Repository.Accession	Type	Subtype	Biosample.Name	Biosample.Description	Species	Strain
 
 displayed_columns  = c(
     "Type",
@@ -240,7 +241,10 @@ function(input, output, session) {
         e = "Aggregating duplicate rows by averaging"
     }
 
+
+    cat("\nbefore\n")
     d = as.data.frame(d)
+    cat("\nafter\n")
     rownames(d) <- d[,1]
     d[,1] <- NULL
 

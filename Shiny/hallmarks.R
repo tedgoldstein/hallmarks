@@ -1,8 +1,4 @@
 ############################################################################################
-df = read.csv("DB.txt", header=TRUE, sep="\t", stringsAsFactors=FALSE)
-y <- aggregate(Study.Title ~ Type, df, c)
-rownames(y) <- y$Type
-TST = apply(y, 1, function(x) as.list(unique(unlist(x$Study.Title))))
  
 
 
@@ -101,7 +97,7 @@ fix <- function(df, r, PI) {
     df[r, "PubMed"] <- "none"
     df[r, "Experiment.ID"] <- "none"
     df[r, "Cohort"] <- "none"
-    df[r, "BioSample.ID"] <- c
+    df[r, "BioSample.ID"] <- r
     df[r, "Repository.Accession"] <- "none"
     df[r, "Biosample.Name"] <- "none"
     df[r, "Biosample.Description"] <- "none"
@@ -110,13 +106,44 @@ fix <- function(df, r, PI) {
 }
 
 for (sig in Signatures$signatures) {
-    m = round(mean( sig$reference$score[sig$reference$labels == 1] ))
-    c = simpleCap(sig$cancer)
-    TCGA[c, sig$hallmark] = m
-    TCGA = fix(TCGA, c, "TCGA")
+    cancer = simpleCap(sig$cancer)
+    TCGA[cancer, sig$hallmark] = round(mean( sig$reference$score[sig$reference$labels == 1] ))
+    TCGA <<- fix(TCGA, cancer, "TCGA")
 }
 
 # colnames(TCGA) <- unlist(lapply(colnames(TCGA), function(x) gsub("Tumor.", "Tumor.", gsub(" ", "_", x))))
+
+
+S = NULL
+T = NULL
+
+aggregateScores = function() {
+    primary = function(x) {
+        df = read.table(paste0("../Scores/",x), sep="\t", header=1, as.is=TRUE, fill=TRUE)
+
+        if (is.null(S))
+            S <<- df
+        else
+            S <<- rbind(S, df)
+    }
+    annotate = function(x) {
+        df = read.table(paste0("../Scores/",x), sep="\t", header=1, as.is=TRUE, fill=TRUE)
+        df =  merge(S, df, by="Biosample.ID")
+
+        if (is.null(T))
+            T <<- df
+        else 
+            T <<- rbind(T, df)
+    }
+
+    lapply(list.files(path = "../Scores", pattern = "SDY*" ), primary)
+    lapply(list.files(path = "../Scores", pattern = "*score" ), annotate)
+    df = as.data.frame(T)
+    colnames(df) <- gsub("-", "_", colnames(df))
+    return(df)
+}
+
+
 
 
 
@@ -129,9 +156,14 @@ read.table.hot = function(name)  {
     table = table[, colOrder];
 }
 
-DB <- reactiveFileReader(1000, NULL, 'DB.txt', read.table.hot)
+# DB <- reactiveFileReader(1000, NULL, 'DB.txt', read.table.hot)
+DB = aggregateScores
 
-SamplesDB = isolate(DB())
+SamplesDB = aggregateScores()
+
+y <- aggregate(Study.Title ~ Type, SamplesDB, c)
+rownames(y) <- y$Type
+TST = apply(y, 1, function(x) as.list(unique(unlist(x$Study.Title))))
 
 
 
@@ -146,7 +178,9 @@ SelectStudies = function(db) {
 
 Studies = SelectStudies(SamplesDB)
 
-Mus_Homologues = read.table("Mus_Homologues.txt", header=T, row.names=1, sep="\t")
+cat("before\n")
+# Mus_Homologues = read.table("Mus_Homologues.txt", header=T, row.names=1, sep="\t")
+cat("after\n")
 
 enableBookmarking(store = "url")
 
