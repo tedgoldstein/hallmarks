@@ -1,5 +1,4 @@
-#!/bin/bash
-s='Models'
+#!/bin/bash s='Models'
 t='tmp'
 
 i='../GeneLists/data/hallmarks.genes'
@@ -9,9 +8,7 @@ mkdir -p $s $t
 while read p q; do
 
   for h in `ls $i/`; do
-    echo Hallmark $h
-    echo p $p
-    echo q $q
+    echo $h $p $q
 
     if [ -f "$s/$p.to.$q.$h.signature" ]; 
     then

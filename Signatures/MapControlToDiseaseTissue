@@ -12,8 +12,8 @@ Kidney Cortex	kidney chromophobe
 Kidney Cortex	kidney clear cell carcinoma
 Kidney Cortex	kidney papillary cell carcinoma
 Liver	liver hepatocellular carcinoma
-Lung non adipose tumor	lung adenocarcinoma
-Lung adipose tissue	lung squamous cell carcinoma
+Lung	lung adenocarcinoma
+Lung	lung squamous cell carcinoma
 Lung	mesothelioma
 Ovary	ovarian serous cystadenocarcinoma
 Pancreas	pancreatic adenocarcinoma
