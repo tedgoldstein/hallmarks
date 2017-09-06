@@ -179,21 +179,19 @@ function(input, output, session) {
 
   output$DB <- DT::renderDataTable( {
 
-    db = DB()
-    c = colnames(db)
+    c = colnames(SamplesDB)
     c = lapply(c, spaceFix)
-    DT::datatable(db, colnames=c, extensions = 'Buttons', 
+    DT::datatable(SamplesDB, colnames=c, extensions = 'Buttons', 
             options = list( pageLength = 10, dom = 'Bfrtip', buttons = c('copy', 'csv', 'excel', 'pdf', 'print')),
             selection = list(selected = c(1, 2))
     )
   } )
 
   output$radarchart <- renderRadarChart({
-    db = DB()
     s = input$DB_rows_selected
 
-    hdb = db[s, hallmark_columns]
-    ldb = db[s, legend_columns]
+    hdb = SamplesDB[s, hallmark_columns]
+    ldb = SamplesDB[s, legend_columns]
     if (nrow(ldb) > 0)
         legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
     else
