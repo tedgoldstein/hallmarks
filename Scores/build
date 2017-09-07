@@ -1,0 +1,12 @@
+
+./prepareRNAseq acute_myeloid_leukemia SDY1099_Grimes_AML_addGSE70235.txt tpm_matrix_AML_superOrtho_meta.tsv
+
+./prepareRNAseq colon_adenocarcinoma SDY1093_Lowe_Colon.txt tpm_matrix_colon_superOrtho_meta.tsv
+
+./prepareRNAseq lung_adenocarcinoma SDY1064_Winslow_lungArntl2.txt tpm_matrix_lung-Arntl2_superOrtho_meta.tsv
+
+./prepareRNAseq lung_adenocarcinoma SDY1079_Winslow_lungCd109.txt tpm_matrix_lung-Cd109_superOrtho_meta.tsv
+
+./prepareRNAseq lung_adenocarcinoma SDY923_Wong_lung.txt tpm_matrix_lung-Pd1_superOrtho_meta.tsv
+
+./prepareRNAseq brain_lower_grade_glioma SDY1148_Miller_brainGlioma.txt tpm_matrix_microglia_superOrtho_meta.tsv

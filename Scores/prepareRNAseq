@@ -1,0 +1,48 @@
+#!/usr/bin/python
+
+import sys, pdb
+
+cancerType = sys.argv[1]
+
+meta = sys.argv[2]
+
+tpm = sys.argv[3]
+tmp = tpm+".tmp"
+score = tpm+".score"
+
+number = 1
+
+#Add Cancer Type column to the SDY study metadata
+with open(meta+".meta", "w") as out:
+    for line in open(meta):
+        line = line[:-1]
+        out.write(line)
+        if number == 1:
+            out.write("\tCancer Type\n")
+        else:
+            out.write("\t"+cancerType+"\n")
+        number = number + 1
+
+
+
+# Move Last column to to the front of the tpm_ file (and make it a tmp)
+yet = False
+
+
+
+with open(tmp, "w") as out:
+    for l in open(tpm):
+        l = l.strip()
+        l = l.split("\t")
+        if l[0] == "gene":
+            yet = True
+            l = l[0:-1]
+            out.write("\t".join(l)+"\n")
+        elif yet:
+            l[0] = l[-1]
+            l = l[0:-1]
+            out.write("\t".join(l)+"\n")
+
+from subprocess import call
+print "Rscript", "run_sigs.R", cancerType, tmp, score
+call(["Rscript", "run_sigs.R", cancerType, tmp, score])
