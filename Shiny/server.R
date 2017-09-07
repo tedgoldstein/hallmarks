@@ -50,7 +50,7 @@ displayed_columns  = c(
     #"PubMed",
     "Experiment.ID",
     "Cohort",
-    "BioSample.ID",
+    "Biosample.ID",
     #"Repository.Accession",
     "Biosample.Name",
     #"Biosample.Description",
@@ -64,7 +64,7 @@ displayed_columns  = c(
     "Sustained_angiogenesis",
     "Sustaining_proliferative_signaling",
     "Tissue_invasion_and_metastasis",
-    "Tumor_promoting_inflammation")
+    "Tumor.promoting_inflammation")
 
 
 
@@ -190,7 +190,8 @@ function(input, output, session) {
   })
 
   output$DB <- DT::renderDataTable( {
-    db = SamplesDB
+    printf("setdiff(colnames(displayed_columns),SamplesDB)=%s\n", setdiff(displayed_columns,colnames(SamplesDB)))
+    db = SamplesDB[,displayed_columns]
     c = colnames(db)
     ff = lapply(c, function(colName) {
         col= db[,colName]
