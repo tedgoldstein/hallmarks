@@ -165,9 +165,12 @@ DB = aggregateScores
 
 SamplesDB = aggregateScores()
 
-y <- aggregate(Study.Title ~ Type, SamplesDB, c)
-rownames(y) <- y$Type
-Studies = apply(y, 1, function(x) as.list(unique(unlist(x$Study.Title))))
+StudiesDB <- aggregate(Study.Title ~ Type, SamplesDB, c)
+rownames(StudiesDB) <- StudiesDB$Type
+browser()
+
+
+Studies = apply(StudiesDB, 1, function(x) as.list(unique(unlist(x$Study.Title))))
 Studies = unlist(unique(sort(unlist(Studies))))
 
 
