@@ -2,6 +2,8 @@
  
 
 
+library(urltools)
+
 library(shiny)
 library(shinyjqui)
 

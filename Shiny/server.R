@@ -5,6 +5,18 @@ options(shiny.maxRequestSize=50*1024^2)
 
 printf <- function(...) cat(sprintf(...))
 
+urlMap = list(
+    "PubMed"= "https://www.ncbi.nlm.nih.gov/pubmed/",
+    "ImmPort.Study.ID"= "http://www.immport.org/immport-open/public/study/study/displayStudyDetail/",
+    "Strain"= "http://www.findmice.org/summary?query=",
+    "Type"= "https://portal.gdc.cancer.gov/projects/",
+    "Experiment.ID"= "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
+    "BioSample.ID"= "https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?run=",
+    "Repository.Accession"= "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
+    "PI"= "https://www.google.com/search?q="
+)
+
+
 hallmark_columns = c(
     "Evading_growth_suppressors",
     "Evading_immune_destruction",
@@ -178,12 +190,27 @@ function(input, output, session) {
   })
 
   output$DB <- DT::renderDataTable( {
+    db = SamplesDB
+    c = colnames(db)
+    ff = lapply(c, function(colName) {
+        col= db[,colName]
+        if (colName == "Strain") {
+            encoded = gsub(" .*", "", col)
+            encoded = url_encode(encoded)
+        } else
+            encoded = col
 
-    c = colnames(SamplesDB)
+        if (colName %in% names(urlMap)) {
+            url = urlMap[colName]
+            sprintf("<a href='%s%s'  target='OMFS-aux' >%s</a>", url, encoded, col)
+        } else
+            col
+    })
+    db  = data.frame( ff )
     c = lapply(c, spaceFix)
-    DT::datatable(SamplesDB, colnames=c, extensions = 'Buttons', 
+    DT::datatable(db, colnames=c, extensions = 'Buttons', 
             options = list( pageLength = 10, dom = 'Bfrtip', buttons = c('copy', 'csv', 'excel', 'pdf', 'print')),
-            selection = list(selected = c(1, 2))
+            selection = list(selected = c(1, 2)), escape=FALSE 
     )
   } )
 
