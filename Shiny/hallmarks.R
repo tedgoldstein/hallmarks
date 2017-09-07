@@ -123,12 +123,13 @@ T = NULL
 
 aggregateScores = function() {
     primary = function(x) {
-        df = read.table(paste0("../Scores/",x), sep="\t", header=1, as.is=TRUE, fill=TRUE)
+        df = read.table(paste0("../Scores/",x), sep="\t", header=1, as.is=TRUE)
 
         if (is.null(S))
             S <<- df
-        else
+        else {
             S <<- rbind(S, df)
+        }
     }
     annotate = function(x) {
         df = read.table(paste0("../Scores/",x), sep="\t", header=1, as.is=TRUE, fill=TRUE)
@@ -136,12 +137,12 @@ aggregateScores = function() {
 
         if (is.null(T))
             T <<- df
-        else 
+        else
             T <<- rbind(T, df)
     }
 
-    lapply(list.files(path = "../Scores", pattern = "SDY*" ), primary)
-    lapply(list.files(path = "../Scores", pattern = "*score" ), annotate)
+    lapply(list.files(path = "../Scores", pattern = "*.metadata" ), primary)
+    lapply(list.files(path = "../Scores", pattern = "*.score" ), annotate)
     df = as.data.frame(T)
     colnames(df) <- gsub("-", "_", colnames(df))
     return(df)
