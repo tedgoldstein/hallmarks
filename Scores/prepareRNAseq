@@ -45,5 +45,5 @@ with open(tmp, "w") as out:
             out.write("\t".join(l)+"\n")
 
 from subprocess import call
-# print "Rscript", "run_sigs.R", cancerType, tmp, score
-# call(["Rscript", "run_sigs.R", cancerType, tmp, score])
+print "Rscript", "run_sigs.R", cancerType, tmp, score
+call(["Rscript", "run_sigs.R", cancerType, tmp, score])
