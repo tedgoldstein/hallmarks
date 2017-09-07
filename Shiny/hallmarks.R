@@ -10,6 +10,8 @@ library(shinyjqui)
 # Don't use (jsonlite) 
 library(RJSONIO)
 
+printf <- function(...) cat(sprintf(...))
+
 # To be called from ui.R
 radarChartOutput <- function(inputId, width="100%", height="400px") {
   style <- sprintf("width: %s; height: %s;",
@@ -165,24 +167,15 @@ SamplesDB = aggregateScores()
 
 y <- aggregate(Study.Title ~ Type, SamplesDB, c)
 rownames(y) <- y$Type
-TST = apply(y, 1, function(x) as.list(unique(unlist(x$Study.Title))))
+Studies = apply(y, 1, function(x) as.list(unique(unlist(x$Study.Title))))
+Studies = unlist(unique(sort(unlist(Studies))))
 
 
 
 # Cancers = c("All", unique(sort(SamplesDB$Type)))
 Cancers = unique(sort(SamplesDB$Type))
 
-SelectStudies = function(db) {
-   fields = c("ImmPort.Study.ID", "PI",  "Study.Title")
-   c("All", unique(sort(apply(unique(db[,fields]), 1, function(x) paste(x, collapse=" ")))))
-}
-
-
-Studies = SelectStudies(SamplesDB)
-
-cat("before\n")
 # Mus_Homologues = read.table("Mus_Homologues.txt", header=T, row.names=1, sep="\t")
-cat("after\n")
 
 enableBookmarking(store = "url")
 

@@ -12,7 +12,7 @@ function(request) {
 
 
                 div(class="CancerDiv",
-                    selectInput('cancer', NULL, TST, selectize=TRUE)),
+                    selectInput('cancer', NULL, Studies, width="500px", selectize=TRUE)),
 
                 DT::dataTableOutput('DB')
                ))

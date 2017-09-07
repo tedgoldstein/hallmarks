@@ -3,8 +3,6 @@ library(pracma)
 
 options(shiny.maxRequestSize=50*1024^2) 
 
-printf <- function(...) cat(sprintf(...))
-
 urlMap = list(
     "PubMed"= "https://www.ncbi.nlm.nih.gov/pubmed/",
     "ImmPort.Study.ID"= "http://www.immport.org/immport-open/public/study/study/displayStudyDetail/",
