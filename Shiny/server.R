@@ -158,14 +158,15 @@ computeSignatureScore = function(X, tissue) {
 
 
 spaceFix <- function (x) gsub("[._]", " ", x)
-TCGA = SamplesDB[SamplesDB$PI == "TCGA", ]
 
 function(input, output, session) {
   UserState <- reactiveValues();
 
   DB = reactive({
-    title = StudyDB[input$study,]$Study.Title
+    title = StudiesDB[input$study,]$Study.Title
     db = SamplesDB[SamplesDB$Study.Title == title, ]
+    TCGA = db[SamplesDB$PI == "TCGA", ]
+
     # TCGA reference samples should be at the beginning
     type = db[1,"Type"]
     ref = TCGA[TCGA$Subtype == type,]
@@ -189,8 +190,7 @@ function(input, output, session) {
   })
 
   output$DB <- DT::renderDataTable( {
-    printf("setdiff(colnames(displayed_columns),SamplesDB)=%s\n", setdiff(displayed_columns,colnames(SamplesDB)))
-    db = SamplesDB[,displayed_columns]
+    db = DB()[,displayed_columns]
     c = colnames(db)
     ff = lapply(c, function(colName) {
         col= db[,colName]
@@ -216,8 +216,9 @@ function(input, output, session) {
   output$radarchart <- renderRadarChart({
     s = input$DB_rows_selected
 
-    hdb = SamplesDB[s, hallmark_columns]
-    ldb = SamplesDB[s, legend_columns]
+    db = DB()
+    hdb = db[s, hallmark_columns]
+    ldb = db[s, legend_columns]
     if (nrow(ldb) > 0)
         legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
     else
@@ -283,17 +284,13 @@ function(input, output, session) {
         }
     })
 
-    datasetInput <- reactive({
-      SamplesDB
-    })
-
 
    output$downloadSamples <- downloadHandler(
         filename = function() {
           paste("OMFS.csv", sep = "")
         },
         content = function(file) {
-          write.csv(datasetInput(), file, row.names = FALSE)
+          write.csv(DB(), file, row.names = FALSE)
         }
    )
 
