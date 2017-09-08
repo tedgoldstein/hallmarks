@@ -478,7 +478,7 @@ var RadarChart = {
          var label = legend[i];
          label = label.replace(/ none/g, "")
 	 var color = cfg.color(i);
-         var txt = '<li> <div class="legend-input-color"> <textarea class="legend-label" rows="2" cols="60">' +  label + '</textarea> <div class="legend-color-box" style="background-color: '+ color + ';"></div> </div> </li>';
+         var txt = '<li> <div class="legend-input-color"> <textarea class="legend-label" rows="4" cols="100">' +  label + '</textarea> <div class="legend-color-box" style="background-color: '+ color + ';"></div> </div> </li>';
          $(".legend-ul").append(txt);
      }
   }

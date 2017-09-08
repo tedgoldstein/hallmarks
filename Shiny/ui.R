@@ -12,7 +12,7 @@ function(request) {
 
             div(class="center",
                     tags$div(class="legend-div",
-                        tags$p("Legend"),
+                        tags$h3("Legend"),
                         tags$ul(class="legend-ul")),
                     # checkboxInput("zodiac", "Hallmark Zodiac", value = TRUE, width = NULL),
                     radarChartOutput("radarchart"),
