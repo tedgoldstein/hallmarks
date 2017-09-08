@@ -208,8 +208,7 @@ function(input, output, session) {
     })
     db  = data.frame( ff )
     c = lapply(c, spaceFix)
-    DT::datatable(db, colnames=c, extensions = 'Buttons', 
-            options = list( pageLength = 10, dom = 'Bfrtip', buttons = c('copy', 'csv', 'excel', 'pdf', 'print')),
+    DT::datatable(db, colnames=c, 
             selection = list(selected = c(1, 2)), escape=FALSE 
     )
   } )
