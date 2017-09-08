@@ -165,15 +165,10 @@ read.table.hot = function(name)  {
 DB = aggregateScores
 
 SamplesDB = aggregateScores()
-
-StudiesDB <- aggregate(Study.Title ~ Type, SamplesDB, c)
-rownames(StudiesDB) <- StudiesDB$Type
-browser()
-
-
-Studies = apply(StudiesDB, 1, function(x) as.list(unique(unlist(x$Study.Title))))
-Studies = unlist(unique(sort(unlist(Studies))))
-
+StudiesDB = SamplesDB[,c("Cancer.Type", "Study.Title", "ImmPort.Study.ID", "PI")]
+StudiesDB$Cancer.Type = lapply(StudiesDB$Cancer.Type, simpleCap)
+StudiesDB = unique(StudiesDB)
+rownames(StudiesDB) = do.call(paste, StudiesDB)
 
 
 # Cancers = c("All", unique(sort(SamplesDB$Type)))

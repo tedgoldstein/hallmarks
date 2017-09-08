@@ -164,7 +164,8 @@ function(input, output, session) {
   UserState <- reactiveValues();
 
   DB = reactive({
-    db = SamplesDB[SamplesDB$Study.Title == input$cancer, ]
+    title = StudyDB[input$study,]$Study.Title
+    db = SamplesDB[SamplesDB$Study.Title == title, ]
     # TCGA reference samples should be at the beginning
     type = db[1,"Type"]
     ref = TCGA[TCGA$Subtype == type,]
