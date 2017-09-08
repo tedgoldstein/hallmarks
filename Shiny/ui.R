@@ -22,6 +22,7 @@ function(request) {
                     selectInput('study', NULL, rownames(StudiesDB), width="800px", selectize=TRUE)),
 
                 tags$a(name="Select_Sample", h3("Select Sample")),
+                downloadButton("downloadSamples", "Download Samples"),
                 DT::dataTableOutput('DB')
                ))
 

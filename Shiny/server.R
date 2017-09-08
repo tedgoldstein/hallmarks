@@ -283,6 +283,19 @@ function(input, output, session) {
         }
     })
 
+    datasetInput <- reactive({
+      SamplesDB
+    })
+
+
+   output$downloadSamples <- downloadHandler(
+        filename = function() {
+          paste("OMFS.csv", sep = "")
+        },
+        content = function(file) {
+          write.csv(datasetInput(), file, row.names = FALSE)
+        }
+   )
 
 } # end of server.R singletonfunction
 
