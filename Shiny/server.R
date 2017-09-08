@@ -72,8 +72,7 @@ rescale= function(a) {
 
 
 computeSignatureScore = function(X, cancer) {
-    index <- Signatures$index[[cancer]];
-    signaturesForTissue <- Signatures$signatures[index];
+    signaturesForTissue <- Filter(function(ss) ss$cancer == "acute_myeloid_leukemia", Signatures$signatures)
 
     possible = row.names(X)
     X <- apply(X, 2, rescale)
