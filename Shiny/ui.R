@@ -44,8 +44,8 @@ function(request) {
           DT::dataTableOutput('Uploaded')
       ),
       wellPanel(
-          p("Select the correct tissue of origin or cancer pathology determined type"),
-          selectInput('tissue', 'Tissue', Tissues) ,
+          p("Select the correct cancer pathology type"),
+          selectInput('Cancer', 'Cancer', Cancers) ,
           DT::dataTableOutput('Scored')
       )
    )

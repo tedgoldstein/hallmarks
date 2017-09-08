@@ -9,7 +9,7 @@ urlMap = list(
     "Strain"= "http://www.findmice.org/summary?query=",
     "Type"= "https://portal.gdc.cancer.gov/projects/",
     "Experiment.ID"= "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
-    "BioSample.ID"= "https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?run=",
+    "Biosample.ID"= "https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?run=",
     "Repository.Accession"= "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
     "PI"= "https://www.google.com/search?q="
 )
@@ -66,19 +66,13 @@ displayed_columns  = c(
 
 
 
-maxS = 3.0
-minS = -3.0
-diffS = maxS - minS;
-
 rescale= function(a) {
-  b = scale(a, center = T, scale = T);
-  c = diffS/(max(b)-min(b))*(b-min(b))+minS
-  return(c);
+  scale(a, center = TRUE, scale = TRUE);
 }
 
 
-computeSignatureScore = function(X, tissue) {
-    index <- Signatures$index[[tissue]];
+computeSignatureScore = function(X, cancer) {
+    index <- Signatures$index[[cancer]];
     signaturesForTissue <- Signatures$signatures[index];
 
     possible = row.names(X)
@@ -135,7 +129,8 @@ computeSignatureScore = function(X, tissue) {
     n = nrow(scores)
     scores = cbind(scores, 
         data.frame(
-            BioSample.ID = colnames(X),
+            Biosample.ID = colnames(X),
+            Cancer.Type =rep( simpleCap(signature$cancer), n), 
 
             Type = rep( simpleCap(signature$cancer), n),
             Subtype = rep( simpleCap(signature$tissue), n),
@@ -184,6 +179,7 @@ function(input, output, session) {
             rownames(user) = nms
         }
         
+        browser()
         db = rbind(user, db)
     }
     db
@@ -279,7 +275,7 @@ function(input, output, session) {
 
     output$Scored <- DT::renderDataTable( { 
         if (! is.null(UserState$uploaded)) {
-            UserState$uploadedScored = computeSignatureScore(UserState$uploaded, input$tissue)
+            UserState$uploadedScored = computeSignatureScore(UserState$uploaded, input$Cancer)
             DT::datatable(UserState$uploadedScored)
         }
     })

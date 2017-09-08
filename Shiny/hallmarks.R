@@ -101,7 +101,7 @@ fix <- function(df, r, PI) {
     df[r, "PubMed"] <- "none"
     df[r, "Experiment.ID"] <- "none"
     df[r, "Cohort"] <- "none"
-    df[r, "BioSample.ID"] <- r
+    df[r, "Biosample.ID"] <- r
     df[r, "Repository.Accession"] <- "none"
     df[r, "Biosample.Name"] <- "none"
     df[r, "Biosample.Description"] <- "none"
@@ -154,7 +154,7 @@ aggregateScores = function() {
 
 read.table.hot = function(name)  {
     table = read.table(name, header=TRUE, as.is=TRUE, fill=TRUE, sep="\t")
-    row.names(table) = table$BioSample.ID
+    row.names(table) = table$Biosample.ID
 
     colOrder = colnames(table)
     table = rbind(TCGA, table)
@@ -171,8 +171,7 @@ StudiesDB = unique(StudiesDB)
 rownames(StudiesDB) = do.call(paste, StudiesDB)
 
 
-# Cancers = c("All", unique(sort(SamplesDB$Type)))
-Cancers = unique(sort(SamplesDB$Type))
+Cancers = unique(unlist(lapply(Signatures$signatures,function(s) s$cancer)))
 
 # Mus_Homologues = read.table("Mus_Homologues.txt", header=T, row.names=1, sep="\t")
 
