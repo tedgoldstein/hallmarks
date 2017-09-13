@@ -72,7 +72,7 @@ rescale= function(a) {
 
 
 computeSignatureScore = function(X, cancer) {
-    signaturesForTissue <- Filter(function(ss) ss$cancer == "acute_myeloid_leukemia", Signatures$signatures)
+    signaturesForTissue <- Filter(function(ss) ss$cancer == cancer, Signatures$signatures)
 
     possible = row.names(X)
     X <- apply(X, 2, rescale)
@@ -93,7 +93,7 @@ computeSignatureScore = function(X, cancer) {
         should  <- names(signature$w)
         genes    <- intersect(should, possible)
 
-        printf("should=%d possible=%d actual=%d\n", length(should),length(possible),length(genes));
+        # printf("should=%d possible=%d actual=%d\n", length(should),length(possible),length(genes));
 
         score = data.frame();
         posScale <- signature$posScale;
@@ -168,6 +168,8 @@ function(input, output, session) {
 
     if (! is.null(UserState$uploadedScored)) {
         user = UserState$uploadedScored
+        printf("uploadedScored rebound\n");
+
 
         # rbind adds a digit 1 onto the end of conflicting names, I like this better.
         while (length(intersect(rownames(user), rownames(db))) > 0) {
@@ -178,13 +180,13 @@ function(input, output, session) {
             rownames(user) = nms
         }
         
-        browser()
         db = rbind(user, db)
     }
     db
   })
 
   output$DB <- DT::renderDataTable( {
+    a = UserState$uploadedScored
     db = DB()[,displayed_columns]
     c = colnames(db)
     ff = lapply(c, function(colName) {
@@ -276,6 +278,7 @@ function(input, output, session) {
         if (! is.null(UserState$uploaded)) {
             UserState$uploadedScored = computeSignatureScore(UserState$uploaded, input$Cancer)
             DT::datatable(UserState$uploadedScored)
+            printf("computeSignatureScore %s\n",  input$Cancer)
         }
     })
 

@@ -19,12 +19,15 @@ function(request) {
 
                 tags$a(name="Select_Study", h3("Select Study")),
                 div(class="StudyDiv",
-                    selectInput('study', NULL, rownames(StudiesDB), width="800px", selectize=TRUE)),
+                    selectInput('study', NULL, rownames(StudiesDB), width="800px", selectize=TRUE))
 
+               ))
+     SelectSample <- function()
+        div(style="width:100%",
                 tags$a(name="Select_Sample", h3("Select Sample")),
                 downloadButton("downloadSamples", "Download Samples"),
                 DT::dataTableOutput('DB')
-               ))
+               )
 
     Upload <- function() 
     div(
@@ -56,7 +59,11 @@ function(request) {
       title = "Oncology Model Fidelity Score",
       h3("Oncology Model Fidelity Score"),
       Visualize(),
+      SelectSample(),
       Upload()
+      # tabsetPanel(
+      #   tabPanel( "Select Sample", SelectSample()),
+      #   tabPanel( "Upload", Upload() ))
     )
 }
 
