@@ -3,6 +3,10 @@
 .table-cell {
 }
 
+.sshiny-input-container {
+    background-color: white !important;
+}
+
 
 .shiny-progress {
   top: 0% !important;

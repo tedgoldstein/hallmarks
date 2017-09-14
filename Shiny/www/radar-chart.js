@@ -45,8 +45,8 @@ var RadarChart = {
   defaultConfig: {
     containerClass: 'radar-chart',
     w: 800,
-    h: 600,
-    factor: 0.85,
+    h: 800,
+    factor: 0.75,
     factorLegend: 1,
     levels: 3,
     levelTick: false,
@@ -115,7 +115,6 @@ var RadarChart = {
         tt.append('rect').classed("tooltip", true);
         tt.append('text').classed("tooltip", true);
 
-        debugger
         if (data.length == 0)
             return
         // allow simple notation
@@ -448,6 +447,9 @@ var RadarChart = {
 
     d3.select(id).select('.hallmark-chart').remove();
 
+    var w_off =  -0.17 * cfg.w,
+     h_off = 0 // 0.0 * cfg.h;
+
     svg = d3.select(id)
     .append("div")
     .attr("class", "hallmark-chart")
@@ -456,9 +458,8 @@ var RadarChart = {
     .attr("width", cfg.w)
     .attr("height", cfg.h)
     if (cfg.zodiac) {
-        svg = svg.attr("transform", "translate(160,160)") // 160 is the office into the hallmarks graphic svg
-            .append("g")
-            .attr("transform", "rotate(-18,240,240)") // 18 is the degrees, 240 is the center of the radar chart
+        svg = svg.attr("transform", "translate("+w_off+"," +h_off + ")") // 160 is the office into the hallmarks graphic svg
+            .attr("transform", "rotate(-18, -30,300)") // 18 is the degrees, 240 is the center of the radar chart
     } else
         svg.attr("transform", "translate(165, 50)")
 
@@ -485,20 +486,6 @@ var RadarChart = {
 
 };
 
-testdata = [
-          { className: "Sample1", axes: [
-                  { "axis" :[ "Evading_growth_suppressors"], value:650 },
-                  { "axis" :[ "Evading_immune_destruction"], value:780 },
-                  { "axis" :[ "Genome_instability"],value: 670},
-                  { "axis" :[ "Replicative_immortality"], value: 722},
-                    { "axis" :[ "Reprogramming_energy_metabolism"], value: 600},
-                    { "axis" :[ "Resisting_cell_death"], value: 590},
-                    { "axis" :[ "Sustained_angiogenesis"], value: 880},
-                    { "axis" :[ "Sustaining_proliferative_signaling"], value:810 },
-                    { "axis" :[ "Tissue_invasion_and_metastasis"], value: 822},
-                    { "axis" :[ "Tumor-promoting_inflammation"], value: 700 },
-           ] },
-      ];
 
 function showRadar(R) {
 
@@ -529,14 +516,9 @@ function showRadar(R) {
 
   RadarChart.defaultConfig.zodiac = zodiac;
 
-  if (RadarChart.defaultConfig.zodiac) {
-      w = 480,
-      h = 480;
-  } else {
-      w = 600,
-      h = 800;
-  }
-  // console.log(data);
+  // if (RadarChart.defaultConfig.zodiac) 
+  w = $("#radarchart").width(),
+  h = $("#radarchart").height();
 
   data.map(function(x) {
       x.axes.sort(function(a, b) {
@@ -550,6 +532,8 @@ function showRadar(R) {
   RadarChart.defaultConfig.radius = 3;
   RadarChart.defaultConfig.w = w;
   RadarChart.defaultConfig.h = h;
+  RadarChart.defaultConfig.factor = 0.5;
+  // debugger
   RadarChart.defaultConfig.levelTick =  true,
 
   RadarChart.draw("#radarchart", data, nrow);

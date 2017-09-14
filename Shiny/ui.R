@@ -1,8 +1,8 @@
 jsCode = '$(".StudyDiv").prependTo(".dt-buttons")'
 
 function(request) {
-     Visualize <- function()
-        div(style="width:100%",
+  Visualize <- function()
+    div(style="width:100%",
             tags$a(href="#Select_Study", "Select Study"),
             HTML("&nbsp;&nbsp;"),
             tags$a(href="#Select_Sample", "Select Sample"),
@@ -11,25 +11,28 @@ function(request) {
 
 
             div(class="center",
-                    tags$div(class="legend-div",
+                tags$div(class="legend-div",
                         tags$h3("Legend"),
                         tags$ul(class="legend-ul")),
                     # checkboxInput("zodiac", "Hallmark Zodiac", value = TRUE, width = NULL),
-                    radarChartOutput("radarchart"),
+                div( class="container",
+                    div( class="content",
+                        div(class="radarchartzodiac",
+                            radarChartOutput("radarchart")))),
 
-                tags$a(name="Select_Study", h3("Select Study")),
-                div(class="StudyDiv",
-                    selectInput('study', NULL, rownames(StudiesDB), width="800px", selectize=TRUE))
+                tags$a(name="Select_Study", h3("Select Study"))),
+            div(class="StudyDiv",
+                selectInput('study', NULL, rownames(StudiesDB), width="800px", selectize=TRUE))
 
-               ))
+     )
      SelectSample <- function()
         div(style="width:100%",
                 tags$a(name="Select_Sample", h3("Select Sample")),
                 downloadButton("downloadSamples", "Download Samples"),
                 DT::dataTableOutput('DB')
-               )
+         )
 
-    Upload <- function() 
+  Upload <- function() 
     div(
        wellPanel(
           tags$a(name="Upload_Data", h3("Upload Data")),

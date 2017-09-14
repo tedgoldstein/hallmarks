@@ -1,3 +1,26 @@
+#radarchart {
+    width: 600px;
+    height: 600px;
+    position: relative;
+}
+.container {
+    width: 600px;
+    height: 600px;
+    position: relative;
+}
+.content {
+}
+.container::after {
+ content: url('hallmarks.svg');
+    display: block;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+}
+
 .grow { width: 100%; }
 
 
@@ -5,6 +28,7 @@
       border-style: none; 
       border-color: Transparent; 
       overflow: auto;        
+      font-size:10px;
       resize: none;
 }
 .legend-label:hover { 
@@ -27,7 +51,7 @@
 }
 
 .legend-div {
-    padding-top: 40px;
+    padding-top: 20px;
 }
 .legend-ul {
     margin: -5px;
@@ -65,16 +89,8 @@
     top: 6px;
 }
 
-#radarchart {
- width: 800px;
- height: 800px !important;
- position:relative;
-}
 
 .radarchart-zodiac {
- background-image: url('hallmarks.svg');
- background-repeat: no-repeat;
- background-size: 800px 800px;
 }
 
 .radarchart-nozodiac {
