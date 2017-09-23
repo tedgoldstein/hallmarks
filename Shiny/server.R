@@ -155,9 +155,24 @@ spaceFix <- function (x) gsub("[._]", " ", x)
 
 function(input, output, session) {
   UserState <- reactiveValues();
+  
+   setBookmarkExclude(c(
+        "file1", "Uploaded", 
+        # want this "study",
+        "DB_cell_clicked",
+        "DB_rows_all",
+        # want this "DB_rows_current",
+        # want this "DB_rows_selected",
+        # want this "DB_search",
+        "DB_state"
+        ))
+   
 
   DB = reactive({
-    title = StudiesDB[input$study,]$Study.Title
+    study =  StudiesDB[input$study,]
+    title = study$Study.Title
+    UserState$Study.ID  = study$ImmPort.Study.ID # fix
+
     db = SamplesDB[SamplesDB$Study.Title == title, ]
     TCGA = db[SamplesDB$PI == "TCGA", ]
 
@@ -203,12 +218,14 @@ function(input, output, session) {
         } else
             col
     })
-    db  = data.frame( ff )
-    c = lapply(c, spaceFix)
-    DT::datatable(db, colnames=c, 
-            selection = list(selected = c(1, 2)), escape=FALSE 
-    )
-  } )
+    
+    if (length(UserState$selected) == 0) {
+        selected = c(1, 2)
+    } else {
+        selected = unlist(lapply(unlist(UserState$selected), function(pat) grep(pat, db$Biosample.ID)))
+    }
+    DT::datatable(data.frame( ff ), colnames=c, selection = list(selected = selected), escape=FALSE  )
+   })
 
   output$radarchart <- renderRadarChart({
     s = input$DB_rows_selected
@@ -220,6 +237,7 @@ function(input, output, session) {
         legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
     else
         legend = "none selected"
+    
 
     list(
       nrow = nrow(hdb),
@@ -291,6 +309,38 @@ function(input, output, session) {
           write.csv(DB(), file, row.names = FALSE)
         }
    )
+
+
+   observe({
+        # Trigger this observer every time an input changes
+        reactiveValuesToList(input)
+        session$doBookmark()
+  })
+  onBookmarked(function(url) {
+        updateQueryString(url)
+  })
+
+  onBookmark(function(state) {
+    state$values$savedTime <- Sys.time()
+  })
+
+
+  onRestored(function(state) {
+    ## updateSelectizeInput(session, 'filter', choices = AllTerms, selected= state$input$filter)
+    if (length(state$values$selected) > 0) {
+        db = DB()
+        selected = strsplit(state$values$selected, ",");
+        ix = unlist(lapply(unlist(selected), function(pat) grep(pat, db$Biosample.ID)))
+        df = db[ix,]
+        if (nrow(df) > 0) {
+          updateTextInput(session, "study", value = df[1]$Study.Title)
+          UserState$selected = selected
+        }
+        
+    }
+  })
+  
+  
 
 } # end of server.R singletonfunction
 
