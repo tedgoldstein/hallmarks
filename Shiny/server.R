@@ -1,5 +1,6 @@
 library(dplyr)
 library(pracma)
+library(png)
 
 options(shiny.maxRequestSize=50*1024^2) 
 
@@ -17,15 +18,15 @@ urlMap = list(
 
 hallmark_columns = c(
     "Evading_growth_suppressors",
-    "Evading_immune_destruction",
-    "Genome_instability",
-    "Replicative_immortality",
+    "Sustaining_proliferative_signaling",
     "Reprogramming_energy_metabolism",
     "Resisting_cell_death",
+    "Genome_instability",
     "Sustained_angiogenesis",
-    "Sustaining_proliferative_signaling",
     "Tissue_invasion_and_metastasis",
-    "Tumor.promoting_inflammation")
+    "Tumor.promoting_inflammation",
+    "Replicative_immortality",
+    "Evading_immune_destruction")
 
 legend_columns = c(
      "Biosample.ID",
@@ -227,8 +228,34 @@ function(input, output, session) {
     DT::datatable(data.frame( ff ), colnames=c, selection = list(selected = selected), escape=FALSE  )
    })
 
-  output$radarchart <- renderRadarChart({
+ zodiac = readPNG("Zodiac800.png")
+
+ output$plot2 <- renderImage({
+    # Read plot2's width and height. These are reactive values, so this
+    # expression will re-run whenever these values change.
+    width  <- 800 # session$clientData$output_plot2_width
+    height <- 800 # session$clientData$output_plot2_height
+
+    # A temp file to save the output.
+    outfile <- tempfile(fileext='.png')
+
+    png(outfile, width=width, height=height)
+
+    foo()
+    dev.off()
+
+    # Return a list containing the filename
+    list(src = outfile,
+         width = width,
+         height = height,
+         alt = "This is alternate text")
+  }, deleteFile = TRUE)
+
+
+  foo = function() {
     s = input$DB_rows_selected
+    if (is.null(s))
+       s = c(1,2)
 
     db = DB()
     hdb = db[s, hallmark_columns]
@@ -237,16 +264,35 @@ function(input, output, session) {
         legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
     else
         legend = "none selected"
-    
 
-    list(
-      nrow = nrow(hdb),
-      rownames = rownames(hdb),
-      colnames = colnames(hdb),
-      df = hdb,
-      zodiac = TRUE, # input$zodiac,
-      legend = legend
+    rownames(hdb) = ldb$Biosample.ID
+
+    
+    # The main call
+    data = hdb
+
+    # To use the fmsb package, I have to add 2 lines to the dataframe: the max and min of each topic to show on the plot!
+    data=rbind(rep(1000,5) , rep(0,5) , data)
+
+    colors_border=c( rgb(0.2,0.5,0.5,0.9), rgb(0.8,0.2,0.5,0.9) ,     rgb(0.7,0.5,0.1,0.9) )
+    colors_in=c( rgb(0.2,0.5,0.5,0.4), rgb(0.8,0.2,0.5,0.4) , rgb(0.7,0.5,0.1,0.4) )
+
+    radarchart( data  , axistype=1 ,  
+        image=zodiac, rotate=-18.0, scale=0.5,
+        #custom polygon
+        pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
+
+        #custom the grid
+        cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,20,5), cglwd=0.8,
+
+        #custom labels
+        vlcex=0.8 
     )
+        legend(x=0.7, y=1, legend = rownames(data[-c(1,2),]), bty = "n", pch=20 , col=colors_in , text.col = "grey", cex=1.2, pt.cex=3)
+   }
+
+  output$radarPlot <- renderPlot({
+     foo()
   })
 
   observeEvent( input$file1,  {

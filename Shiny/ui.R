@@ -1,36 +1,22 @@
 jsCode = '$(".StudyDiv").prependTo(".dt-buttons")'
 
 function(request) {
-  Visualize <- function()
-    div(style="width:100%",
-            tags$a(href="#Select_Study", "Select Study"),
-            HTML("&nbsp;&nbsp;"),
-            tags$a(href="#Select_Sample", "Select Sample"),
-            HTML("&nbsp;&nbsp;"),
-            tags$a(href="#Upload_Data", "Upload Data"),
 
-
-            div(class="center",
-                tags$div(class="legend-div",
-                        tags$h3("Legend"),
-                        tags$ul(class="legend-ul")),
-                    # checkboxInput("zodiac", "Hallmark Zodiac", value = TRUE, width = NULL),
-                div( class="container",
-                    div( class="content",
-                        div(class="radarchartzodiac",
-                            radarChartOutput("radarchart")))),
-
-                tags$a(name="Select_Study", h3("Select Study"))),
-            div(class="StudyDiv",
-                selectInput('study', NULL, rownames(StudiesDB), width="800px", selectize=TRUE))
-
-     )
-     SelectSample <- function()
+  SelectStudy <- function()
+        div(class="StudyDiv",
+            selectInput('study', NULL, rownames(StudiesDB), width="800px", selectize=TRUE))
+  SelectSample <- function()
         div(style="width:100%",
-                tags$a(name="Select_Sample", h3("Select Sample")),
-                downloadButton("downloadSamples", "Download Samples"),
-                DT::dataTableOutput('DB')
-         )
+            tags$a(name="Select_Sample", h3("Select Sample")),
+            downloadButton("downloadSamples", "Download Samples"),
+            DT::dataTableOutput('DB')
+        )
+
+  Visualize <- function() 
+    div(
+        plotOutput("plot2", width="800px", height="800px"),
+        plotOutput('radarPlot')
+    )
 
   Upload <- function() 
     div(
@@ -58,15 +44,24 @@ function(request) {
 
 
 
-    fluidPage(
-      title = "Oncology Model Fidelity Score",
-      h3("Oncology Model Fidelity Score"),
-      Visualize(),
-      SelectSample(),
-      Upload()
-      # tabsetPanel(
-      #   tabPanel( "Select Sample", SelectSample()),
-      #   tabPanel( "Upload", Upload() ))
+
+# Define UI for random distribution application 
+fluidPage(
+    
+  titlePanel("Oncology Model Fidelity Score"),
+  
+  # Sidebar with controls to select the random distribution type
+  # and number of observations to generate. Note the use of the
+  # br() element to introduce extra vertical spacing
+    
+  # Show a tabset that includes a plot, summary, and table view
+  # of the generated distribution
+    tabsetPanel(type = "tabs", 
+       tabPanel( "Visualize", Visualize()),
+       tabPanel( "Select Study", SelectStudy()),
+       tabPanel( "Select Sample", SelectSample()),
+       tabPanel( "Upload", Upload() ))
     )
 }
+
 
