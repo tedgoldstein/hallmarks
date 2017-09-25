@@ -8,7 +8,7 @@
 # Materials:  NEWS
 # CRAN checks:    fmsb results
 
-radarchart <- function(df, axistype=0, scale=1,
+radarchart <- function(df, axistype=0, scale=1, no_vlabels=FALSE,
                        image=NULL, rotate = 0,
                        seg=4, pty=16, pcol=1:8, plty=1:6, plwd=1,
                        pdensity=NULL, pangle=45, pfcol=NA, cglty=3, cglwd=1,
@@ -23,14 +23,15 @@ radarchart <- function(df, axistype=0, scale=1,
     dfmin <- apply(df, 2, min)
     df <- rbind(dfmax, dfmin, df)
   }
-  plot(NA,xlim=c(0,nrow(image)),ylim=c(0,ncol(image)), type = "n", xlab = "", ylab = "", frame.plot=FALSE, axes=FALSE, asp=1 )
-  rasterImage(image,0,0,nrow(image),ncol(image))
+  if (!is.null(image)) {
+      plot(NA,xlim=c(0,nrow(image)),ylim=c(0,ncol(image)), type = "n", xlab = "", ylab = "", frame.plot=FALSE, axes=FALSE, asp=1 )
+      rasterImage(image,0,0,nrow(image),ncol(image))
+  }
 
   par(bg=NA) # no backround
   plot(c(-1.2/scale, 1.2/scale), c(-1.2/scale, 1.2/scale), type="n", frame.plot=FALSE, axes=FALSE, 
        xlab="", ylab="", main=title, asp=1, ...) # define x-y coordinates without any plot
   theta <- seq(90 + rotate, 450 + rotate, length=n+1)*pi/180
-  # browser()
   theta <- theta[1:n]
   xx <- cos(theta)
   yy <- sin(theta)
@@ -54,13 +55,18 @@ radarchart <- function(df, axistype=0, scale=1,
   PAXISLABELS <- df[1,1:n]
   if (!is.null(paxislabels)) PAXISLABELS <- paxislabels
   if (axistype==2|axistype==3|axistype==5) {
+   browser()
    if (is.null(palcex)) text(xx[1:n], yy[1:n], PAXISLABELS, col=axislabcol) else
    text(xx[1:n], yy[1:n], PAXISLABELS, col=axislabcol, cex=palcex)
+
   }
-  VLABELS <- colnames(df)
-  if (!is.null(vlabels)) VLABELS <- vlabels
-  if (is.null(vlcex)) text(xx*1.2, yy*1.2, VLABELS) else
-  text(xx*1.2, yy*1.2, VLABELS, cex=vlcex)
+  if (!no_vlabels) {
+      VLABELS <- colnames(df)
+      if (!is.null(vlabels)) VLABELS <- vlabels
+      if (is.null(vlcex)) text(xx*1.2, yy*1.2, VLABELS) else
+      text(xx*1.2, yy*1.2, VLABELS, cex=vlcex)
+  }
+
   series <- length(df[[1]])
   SX <- series-2
   if (length(pty) < SX) { ptys <- rep(pty, SX) } else { ptys <- pty }

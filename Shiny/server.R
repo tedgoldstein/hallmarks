@@ -241,7 +241,7 @@ function(input, output, session) {
 
     png(outfile, width=width, height=height)
 
-    foo()
+    foo(TRUE)
     dev.off()
 
     # Return a list containing the filename
@@ -252,7 +252,7 @@ function(input, output, session) {
   }, deleteFile = TRUE)
 
 
-  foo = function() {
+  foo = function(zodiacLayout) {
     s = input$DB_rows_selected
     if (is.null(s))
        s = c(1,2)
@@ -267,7 +267,6 @@ function(input, output, session) {
 
     rownames(hdb) = ldb$Biosample.ID
 
-    
     # The main call
     data = hdb
 
@@ -276,23 +275,36 @@ function(input, output, session) {
 
     colors_border=c( rgb(0.2,0.5,0.5,0.9), rgb(0.8,0.2,0.5,0.9) ,     rgb(0.7,0.5,0.1,0.9) )
     colors_in=c( rgb(0.2,0.5,0.5,0.4), rgb(0.8,0.2,0.5,0.4) , rgb(0.7,0.5,0.1,0.4) )
+    if (zodiacLayout) {
+        image=zodiac
+        rotate=-18.0
+        scale=0.66
+        no_vlabels=TRUE
+    } else {
+        image=NULL
+        rotate=0
+        scale=1.0
+        no_vlabels=FALSE
+    }
 
-    radarchart( data  , axistype=1 ,  
-        image=zodiac, rotate=-18.0, scale=0.5,
+    radarchart( data  , axistype=1 ,  no_vlabels=no_vlabels,
+        image=image, rotate=rotate, scale=scale, 
+        caxislabels=c(0,250,500, 750,1000),
         #custom polygon
         pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
 
         #custom the grid
-        cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,20,5), cglwd=0.8,
+        cglcol="grey", cglty=1, axislabcol="grey", cglwd=0.8,
 
         #custom labels
         vlcex=0.8 
     )
+    if (!zodiacLayout)
         legend(x=0.7, y=1, legend = rownames(data[-c(1,2),]), bty = "n", pch=20 , col=colors_in , text.col = "grey", cex=1.2, pt.cex=3)
    }
 
   output$radarPlot <- renderPlot({
-     foo()
+     foo(FALSE)
   })
 
   observeEvent( input$file1,  {
