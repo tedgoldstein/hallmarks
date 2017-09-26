@@ -175,8 +175,15 @@ function(input, output, session) {
     StudiesDB[sel,]
   })
    
+  radar_colors= rainbow(8)
+  rgba = function(x) { 
+      y = col2rgb(x)
+      paste("rgba(", paste(unname(y), collapse=","), ",0.5)", sep="")
+  }
+  
 
   DB = reactive({
+    
 
     study =  study_selected()
     title = study$Study.Title
@@ -261,6 +268,35 @@ function(input, output, session) {
 
 
 
+  output$Legend = renderUI( {
+    s = input$DB_rows_selected
+    if (is.null(s))
+       s = c(1,2)
+
+    db = DB()
+    ldb = db[s, legend_columns]
+
+    if (nrow(ldb) > 0)
+        # legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
+        legend =  apply(ldb, 1, function(x) {
+            paste(x["Biosample.ID"], x["Biosample.Description"])
+        })
+    else
+        legend = list("none selected")
+    
+   wrapDiv = function(i)  {
+     style =  paste("width: 20px; height: 20px; border:1px solid #000; background-color: ",
+            rgba(radar_colors[i]),
+            ";  display: inline-block; vertical-align: top; margin: 5px;")
+    
+     tags$li( div( tags$span(style=style), tags$span(legend[i])))
+  }
+    
+    tags$ul(style="list-style: none;", lapply(1:length(legend), wrapDiv))
+  })
+
+
+
   plotRadarChart = function(zodiacLayout) {
     s = input$DB_rows_selected
     if (is.null(s))
@@ -300,7 +336,7 @@ function(input, output, session) {
         image=image, rotate=rotate, scale=scale, 
         caxislabels=c(0,250,500, 750,1000),
         #custom polygon
-        pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
+        pcol=radar_colors , plwd=4 , plty=1,
 
         #custom the grid
         cglcol="grey", cglty=1, axislabcol="grey", cglwd=0.8,
@@ -361,7 +397,6 @@ function(input, output, session) {
     output$Scored <- DT::renderDataTable( { 
         if (! is.null(UserState$uploaded)) {
             UserState$uploadedScored = computeSignatureScore(UserState$uploaded, input$Cancer)
-browser()
             DT::datatable(UserState$uploadedScored)
             printf("computeSignatureScore %s\n",  input$Cancer)
         }
