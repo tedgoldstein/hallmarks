@@ -167,10 +167,18 @@ function(input, output, session) {
         # want this "DB_search",
         "DB_state"
         ))
+
+  study_selected = reactive({
+    sel = 1
+    if (!is.null(input$study_rows_selected))
+        sel = input$study_rows_selected
+    StudiesDB[sel,]
+  })
    
 
   DB = reactive({
-    study =  StudiesDB[input$study,]
+
+    study =  study_selected()
     title = study$Study.Title
     UserState$Study.ID  = study$ImmPort.Study.ID # fix
 
@@ -250,6 +258,7 @@ function(input, output, session) {
          height = height,
          alt = "This is alternate text")
   }, deleteFile = TRUE)
+
 
 
   plotRadarChart = function(zodiacLayout) {
@@ -345,10 +354,14 @@ function(input, output, session) {
     UserState$uploaded = d
     output$Uploaded <- DT::renderDataTable( { DT::datatable(UserState$uploaded, options = list( pageLength = 5)) })
   })
+    output$study <- DT::renderDataTable( { 
+        DT::datatable(StudiesDB, selection = "single", rownames= FALSE)
+    })
 
     output$Scored <- DT::renderDataTable( { 
         if (! is.null(UserState$uploaded)) {
             UserState$uploadedScored = computeSignatureScore(UserState$uploaded, input$Cancer)
+browser()
             DT::datatable(UserState$uploadedScored)
             printf("computeSignatureScore %s\n",  input$Cancer)
         }
@@ -380,7 +393,6 @@ function(input, output, session) {
 
 
   onRestored(function(state) {
-    ## updateSelectizeInput(session, 'filter', choices = AllTerms, selected= state$input$filter)
     if (length(state$values$selected) > 0) {
         db = DB()
         selected = strsplit(state$values$selected, ",");

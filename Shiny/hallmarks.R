@@ -168,7 +168,7 @@ SamplesDB = aggregateScores()
 StudiesDB = SamplesDB[,c("Cancer.Type", "Study.Title", "ImmPort.Study.ID", "PI")]
 StudiesDB$Cancer.Type = lapply(StudiesDB$Cancer.Type, simpleCap)
 StudiesDB = unique(StudiesDB)
-rownames(StudiesDB) = do.call(paste, StudiesDB)
+# rownames(StudiesDB) = do.call(paste, StudiesDB)
 
 
 Cancers = unique(unlist(lapply(Signatures$signatures,function(s) s$cancer)))

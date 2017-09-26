@@ -3,8 +3,8 @@ jsCode = '$(".StudyDiv").prependTo(".dt-buttons")'
 function(request) {
 
   SelectStudy <- function()
-        div(class="StudyDiv",
-            selectInput('study', NULL, rownames(StudiesDB), width="800px", selectize=TRUE))
+        DT::dataTableOutput('study')
+
   SelectSample <- function()
         div(style="width:100%",
             tags$a(name="Select_Sample", h3("Select Sample")),
