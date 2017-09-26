@@ -13,10 +13,7 @@ function(request) {
         )
 
   Visualize <- function() 
-    div(
-        plotOutput("plot2", width="800px", height="800px"),
-        plotOutput('radarPlot')
-    )
+    plotOutput("radarImage", width="800px", height="800px")
 
   Upload <- function() 
     div(

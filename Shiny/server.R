@@ -230,7 +230,7 @@ function(input, output, session) {
 
  zodiac = readPNG("Zodiac800.png")
 
- output$plot2 <- renderImage({
+ output$radarImage <- renderImage({
     # Read plot2's width and height. These are reactive values, so this
     # expression will re-run whenever these values change.
     width  <- 800 # session$clientData$output_plot2_width
@@ -241,7 +241,7 @@ function(input, output, session) {
 
     png(outfile, width=width, height=height)
 
-    foo(TRUE)
+    plotRadarChart(TRUE)
     dev.off()
 
     # Return a list containing the filename
@@ -252,7 +252,7 @@ function(input, output, session) {
   }, deleteFile = TRUE)
 
 
-  foo = function(zodiacLayout) {
+  plotRadarChart = function(zodiacLayout) {
     s = input$DB_rows_selected
     if (is.null(s))
        s = c(1,2)
@@ -302,10 +302,6 @@ function(input, output, session) {
     if (!zodiacLayout)
         legend(x=0.7, y=1, legend = rownames(data[-c(1,2),]), bty = "n", pch=20 , col=colors_in , text.col = "grey", cex=1.2, pt.cex=3)
    }
-
-  output$radarPlot <- renderPlot({
-     foo(FALSE)
-  })
 
   observeEvent( input$file1,  {
     # input$file1 will be NULL initially. After the user selects
