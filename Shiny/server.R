@@ -175,7 +175,14 @@ function(input, output, session) {
     StudiesDB[sel,]
   })
    
-  radar_colors= rainbow(8)
+   
+  add.alpha <- function(col, alpha=0.5){
+      apply(sapply(col, col2rgb)/255, 2, function(x) rgb(x[1], x[2], x[3], alpha=alpha))  
+  }
+
+  radar_colors= add.alpha(rainbow(8))
+
+
   rgba = function(x) { 
       y = col2rgb(x)
       paste("rgba(", paste(unname(y), collapse=","), ",0.5)", sep="")
@@ -289,7 +296,7 @@ function(input, output, session) {
             rgba(radar_colors[i]),
             ";  display: inline-block; vertical-align: top; margin: 5px;")
     
-     tags$li( div( tags$span(style=style), tags$span(legend[i])))
+     tags$li( div( tags$span(style=style), tags$span(style="text-align: left;",  legend[i])))
   }
     
     tags$ul(style="list-style: none;", lapply(1:length(legend), wrapDiv))

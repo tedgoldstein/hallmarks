@@ -13,13 +13,15 @@ function(request) {
         )
 
   Visualize <- function() 
-     div(
-      mainPanel(
+     sidebarLayout(
+      mainPanel(width=7,
         plotOutput("radarImage", width="800px", height="800px")),
-      div(
+
+      sidebarPanel(width=5,
         h2("Legend"),
         uiOutput("Legend")
-      )) 
+      )
+     ) 
 
   Upload <- function() 
     div(
