@@ -144,7 +144,7 @@ computeSignatureScore = function(X, cancer) {
             Repository.Accession = rep( "none", n),
             Biosample.Name = rep( "none", n),
             Biosample.Description = rep( "none", n),
-            Strain = rep( "none", n)));
+            Strain = rep( "none", n), stringsAsFactors=FALSE));
 
     return (scores)
 }
@@ -158,7 +158,7 @@ function(input, output, session) {
   UserState <- reactiveValues();
   
    setBookmarkExclude(c(
-        "file1", "Uploaded", 
+        ".file1", "Uploaded", 
         # want this "study",
         "DB_cell_clicked",
         "DB_rows_all",
@@ -203,51 +203,46 @@ function(input, output, session) {
     type = db[1,"Type"]
     ref = TCGA[TCGA$Subtype == type,]
     db = rbind(ref, db)
+    jj = db
 
     if (! is.null(UserState$uploadedScored)) {
         user = UserState$uploadedScored
-        printf("uploadedScored rebound\n");
-
-
-        # rbind adds a digit 1 onto the end of conflicting names, I like this better.
-        while (length(intersect(rownames(user), rownames(db))) > 0) {
-            nms = rownames(user)
-            conflict = intersect(nms, rownames(db))
-            whichConflict = match(conflict, nms)
-            nms[whichConflict] = lapply(nms[whichConflict], function(x) paste0(x, ".user"))
-            rownames(user) = nms
-        }
-        
         db = rbind(user, db)
+        rownames(db) = db$Biosample.ID
     }
     db
   })
 
   output$DB <- DT::renderDataTable( {
-    a = UserState$uploadedScored
     db = DB()[,displayed_columns]
-    c = colnames(db)
-    ff = lapply(c, function(colName) {
-        col= db[,colName]
-        if (colName == "Strain") {
-            encoded = gsub(" .*", "", col)
-            encoded = url_encode(encoded)
-        } else
-            encoded = col
 
-        if (colName %in% names(urlMap)) {
-            url = urlMap[colName]
-            sprintf("<a href='%s%s'  target='OMFS-aux' >%s</a>", url, encoded, col)
-        } else
-            col
-    })
+#    ff = lapply(colnames(db), function(colName) {
+#        col= db[,colName]
+#        if (colName == "Strain") {
+#            encoded = gsub(" .*", "", col)
+#            encoded = url_encode(encoded)
+#        } else
+#            encoded = col
+#
+#        if (colName %in% names(urlMap)) {
+#            url = urlMap[colName]
+#            sprintf("<a href='%s%s'  target='OMFS-aux' >%s</a>", url, encoded, col)
+#        } else
+#            col
+#    })
+#
+#    ff = as.data.frame(ff)
+#    colnames(ff) = colnames(db)
+    ff = db
+     
     
     if (length(UserState$selected) == 0) {
         selected = c(1, 2)
     } else {
         selected = unlist(lapply(unlist(UserState$selected), function(pat) grep(pat, db$Biosample.ID)))
     }
-    DT::datatable(data.frame( ff ), colnames=c, selection = list(selected = selected), escape=FALSE  )
+    DT::datatable(ff, selection = list(selected = selected), escape=FALSE  )
+
    })
 
  zodiac = readPNG("Zodiac800.png")
@@ -405,7 +400,6 @@ function(input, output, session) {
         if (! is.null(UserState$uploaded)) {
             UserState$uploadedScored = computeSignatureScore(UserState$uploaded, input$Cancer)
             DT::datatable(UserState$uploadedScored)
-            printf("computeSignatureScore %s\n",  input$Cancer)
         }
     })
 
@@ -426,7 +420,7 @@ function(input, output, session) {
         session$doBookmark()
   })
   onBookmarked(function(url) {
-        updateQueryString(url)
+        # updateQueryString(url)
   })
 
   onBookmark(function(state) {
