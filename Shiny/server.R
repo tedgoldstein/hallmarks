@@ -156,7 +156,7 @@ spaceFix <- function (x) gsub("[._]", " ", x)
 
 function(input, output, session) {
   UserState <- reactiveValues();
-  XXXselected = c(1,2)
+  XXXselected = c()
   
    setBookmarkExclude(c(
         # "Cancer",
@@ -258,10 +258,10 @@ function(input, output, session) {
     db = DB()[,displayed_columns]
     db = transformURL(db)
 
-    if (length(UserState$selected) == 0) {
+    if (length(XXXselected) == 0) {
         selected = c(1, 2)
     } else {
-        selected = unlist(lapply(unlist(UserState$selected), 
+        selected = unlist(lapply(unlist(XXXselected), 
             function(pat)  {
                 grep(pat, db$Biosample.ID)
             }
@@ -455,7 +455,7 @@ function(input, output, session) {
 
 
   onRestored(function(state) {
-    UserState$selected = strsplit(state$values$samples,",")
+    XXXselected = strsplit(state$values$samples,",")
     UserState$study = state$values$study
   })
   
