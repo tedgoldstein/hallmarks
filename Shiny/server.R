@@ -156,16 +156,33 @@ spaceFix <- function (x) gsub("[._]", " ", x)
 
 function(input, output, session) {
   UserState <- reactiveValues();
+  XXXselected = c(1,2)
   
    setBookmarkExclude(c(
-        ".file1", "Uploaded", 
+        # "Cancer",
         # want this "study",
+        "file1", 
+        "Uploaded", 
         "DB_cell_clicked",
         "DB_rows_all",
-        # want this "DB_rows_current",
-        # want this "DB_rows_selected",
-        # want this "DB_search",
-        "DB_state"
+        "DB_rows_current",
+        "DB_rows_selected",
+        "DB_search",
+        "DB_state",
+        "Scored_cell_clicked",
+        "Scored_rows_all",
+        "Scored_rows_current",
+        "Scored_rows_selected",
+        "Scored_search",
+        "Scored_state",
+        "study_cell_clicked",
+        "study_rows_all",
+        "study_rows_current",
+        "study_rows_selected",
+        "study_search",
+        "study_state",
+        "Uploaded_cell_clicked",
+        "Uploaded_rows_all"
         ))
 
   study_selected = reactive({
@@ -208,42 +225,50 @@ function(input, output, session) {
     if (! is.null(UserState$uploadedScored)) {
         user = UserState$uploadedScored
         db = rbind(user, db)
-        rownames(db) = db$Biosample.ID
     }
+    rownames(db) = db$Biosample.ID
     db
   })
 
+
+  transformURL = function(db) {
+    ff = lapply(colnames(db), function(colName) {
+        col= db[,colName]
+        if (colName == "Strain") {
+            encoded = gsub(" .*", "", col)
+            encoded = url_encode(encoded)
+        } else
+            encoded = col
+
+        if (colName %in% names(urlMap)) {
+            url = urlMap[colName]
+            sprintf("<a href='%s%s'  target='OMFS-aux' >%s</a>", url, encoded, col)
+        } else
+            col
+    })
+
+    ff = as.data.frame(ff)
+    colnames(ff) = colnames(db)
+    ff
+  }
+
+
+
   output$DB <- DT::renderDataTable( {
     db = DB()[,displayed_columns]
+    db = transformURL(db)
 
-#    ff = lapply(colnames(db), function(colName) {
-#        col= db[,colName]
-#        if (colName == "Strain") {
-#            encoded = gsub(" .*", "", col)
-#            encoded = url_encode(encoded)
-#        } else
-#            encoded = col
-#
-#        if (colName %in% names(urlMap)) {
-#            url = urlMap[colName]
-#            sprintf("<a href='%s%s'  target='OMFS-aux' >%s</a>", url, encoded, col)
-#        } else
-#            col
-#    })
-#
-#    ff = as.data.frame(ff)
-#    colnames(ff) = colnames(db)
-    ff = db
-     
-    
     if (length(UserState$selected) == 0) {
         selected = c(1, 2)
     } else {
-        selected = unlist(lapply(unlist(UserState$selected), function(pat) grep(pat, db$Biosample.ID)))
+        selected = unlist(lapply(unlist(UserState$selected), 
+            function(pat)  {
+                grep(pat, db$Biosample.ID)
+            }
+        ))
     }
-    DT::datatable(ff, selection = list(selected = selected), escape=FALSE  )
-
-   })
+    DT::datatable(db, selection = list(selected = selected), escape=FALSE  )
+  })
 
  zodiac = readPNG("Zodiac800.png")
 
@@ -271,12 +296,8 @@ function(input, output, session) {
 
 
   output$Legend = renderUI( {
-    s = input$DB_rows_selected
-    if (is.null(s))
-       s = c(1,2)
-
-    db = DB()
-    ldb = db[s, legend_columns]
+    db = SelectedDB()
+    ldb = db[, legend_columns]
 
     if (nrow(ldb) > 0)
         # legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
@@ -297,27 +318,22 @@ function(input, output, session) {
     tags$ul(style="list-style: none;", lapply(1:length(legend), wrapDiv))
   })
 
+  SelectedDB = function() {
+    s = UserState$selected
+    if (is.null(s))
+       s = c(1,2)
+    else
+       s = as.vector(unlist(s))
+    db = DB()
+    db[s,]
+  }
 
 
   plotRadarChart = function(zodiacLayout) {
-    s = input$DB_rows_selected
-    if (is.null(s))
-       s = c(1,2)
+    data = SelectedDB()
+    data = data[, hallmark_columns]
 
-    db = DB()
-    hdb = db[s, hallmark_columns]
-    ldb = db[s, legend_columns]
-    if (nrow(ldb) > 0)
-        legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
-    else
-        legend = "none selected"
-
-    rownames(hdb) = ldb$Biosample.ID
-
-    # The main call
-    data = hdb
-
-    # To use the fmsb package, I have to add 2 lines to the dataframe: the max and min of each topic to show on the plot!
+    # Add max and min of each topic to show on the plot!
     data=rbind(rep(1000,5) , rep(0,5) , data)
 
     colors_border=c( rgb(0.2,0.5,0.5,0.9), rgb(0.8,0.2,0.5,0.9) ,     rgb(0.7,0.5,0.1,0.9) )
@@ -346,9 +362,7 @@ function(input, output, session) {
         #custom labels
         vlcex=0.8 
     )
-    if (!zodiacLayout)
-        legend(x=0.7, y=1, legend = rownames(data[-c(1,2),]), bty = "n", pch=20 , col=colors_in , text.col = "grey", cex=1.2, pt.cex=3)
-   }
+  }
 
   observeEvent( input$file1,  {
     # input$file1 will be NULL initially. After the user selects
@@ -392,6 +406,8 @@ function(input, output, session) {
     UserState$uploaded = d
     output$Uploaded <- DT::renderDataTable( { DT::datatable(UserState$uploaded, options = list( pageLength = 5)) })
   })
+
+
     output$study <- DT::renderDataTable( { 
         DT::datatable(StudiesDB, selection = "single", rownames= FALSE)
     })
@@ -420,26 +436,27 @@ function(input, output, session) {
         session$doBookmark()
   })
   onBookmarked(function(url) {
-        # updateQueryString(url)
+        updateQueryString(url)
   })
+
+  observeEvent(input$DB_rows_selected, {
+    s = rownames(DB())
+    n = input$DB_rows_selected
+    UserState$selected = s[n]
+ })
 
   onBookmark(function(state) {
     state$values$savedTime <- Sys.time()
+    db = DB()
+    samples = db$Biosample.ID[input$DB_rows_selected]
+    state$values$samples <- paste(samples, collapse=",")
+    state$values$study <- study_selected()
   })
 
 
   onRestored(function(state) {
-    if (length(state$values$selected) > 0) {
-        db = DB()
-        selected = strsplit(state$values$selected, ",");
-        ix = unlist(lapply(unlist(selected), function(pat) grep(pat, db$Biosample.ID)))
-        df = db[ix,]
-        if (nrow(df) > 0) {
-          updateTextInput(session, "study", value = df[1]$Study.Title)
-          UserState$selected = selected
-        }
-        
-    }
+    UserState$selected = strsplit(state$values$samples,",")
+    UserState$study = state$values$study
   })
   
   
