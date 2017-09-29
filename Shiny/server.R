@@ -15,6 +15,14 @@ urlMap = list(
     "PI"= "https://www.google.com/search?q="
 )
 
+mgrep = function(l, x)
+   unique(unlist(lapply(unlist(l), 
+        function(pat)  {
+            g = grep(pat, x)
+            g
+        }
+    )))
+
 
 hallmark_columns = c(
     "Evading_growth_suppressors",
@@ -156,9 +164,12 @@ spaceFix <- function (x) gsub("[._]", " ", x)
 
 function(input, output, session) {
   UserState <- reactiveValues();
-  XXXselected = c()
+
+  RestoreState <- reactiveValues();
+  RestoreState$studies = list(rownames(StudiesDB)[1])
+  RestoreState$samples = rownames(SamplesDB)[c(1,2)]
   
-   setBookmarkExclude(c(
+  setBookmarkExclude(c(
         # "Cancer",
         # want this "study",
         "file1", 
@@ -182,15 +193,8 @@ function(input, output, session) {
         "study_search",
         "study_state",
         "Uploaded_cell_clicked",
-        "Uploaded_rows_all"
-        ))
+        "Uploaded_rows_all"))
 
-  study_selected = reactive({
-    sel = 1
-    if (!is.null(input$study_rows_selected))
-        sel = input$study_rows_selected
-    StudiesDB[sel,]
-  })
    
    
   add.alpha <- function(col, alpha=0.5){
@@ -205,32 +209,6 @@ function(input, output, session) {
       paste("rgba(", paste(unname(y), collapse=","), ",0.5)", sep="")
   }
   
-
-  DB = reactive({
-    
-
-    study =  study_selected()
-    title = study$Study.Title
-    UserState$Study.ID  = study$ImmPort.Study.ID # fix
-
-    db = SamplesDB[SamplesDB$Study.Title == title, ]
-    TCGA = db[SamplesDB$PI == "TCGA", ]
-
-    # TCGA reference samples should be at the beginning
-    type = db[1,"Type"]
-    ref = TCGA[TCGA$Subtype == type,]
-    db = rbind(ref, db)
-    jj = db
-
-    if (! is.null(UserState$uploadedScored)) {
-        user = UserState$uploadedScored
-        db = rbind(user, db)
-    }
-    rownames(db) = db$Biosample.ID
-    db
-  })
-
-
   transformURL = function(db) {
     ff = lapply(colnames(db), function(colName) {
         col= db[,colName]
@@ -255,13 +233,15 @@ function(input, output, session) {
 
 
   output$DB <- DT::renderDataTable( {
-    db = DB()[,displayed_columns]
+    db = UserState$DB[,displayed_columns]
     db = transformURL(db)
 
-    if (length(XXXselected) == 0) {
+    sel = RestoreState$selected
+
+    if (length(sel) == 0) {
         selected = c(1, 2)
     } else {
-        selected = unlist(lapply(unlist(XXXselected), 
+        selected = unlist(lapply(unlist(sel), 
             function(pat)  {
                 grep(pat, db$Biosample.ID)
             }
@@ -296,72 +276,67 @@ function(input, output, session) {
 
 
   output$Legend = renderUI( {
-    db = SelectedDB()
-    ldb = db[, legend_columns]
-
-    if (nrow(ldb) > 0)
-        # legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
-        legend =  apply(ldb, 1, function(x) {
-            paste(x["Biosample.ID"], x["Biosample.Description"])
-        })
-    else
-        legend = list("none selected")
-    
-   wrapDiv = function(i)  {
-     style =  paste("width: 20px; height: 20px; border:1px solid #000; background-color: ",
-            rgba(radar_colors[i]),
-            ";  display: inline-block; vertical-align: top; margin: 5px;")
-    
-     tags$li( div( tags$span(style=style), tags$span(style="text-align: left;",  legend[i])))
-  }
-    
-    tags$ul(style="list-style: none;", lapply(1:length(legend), wrapDiv))
+    db = UserState$SelectedDB
+    if (!is.null(db)) {
+      ldb = db[, legend_columns]
+  
+      if (nrow(ldb) > 0)
+          # legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
+          legend =  apply(ldb, 1, function(x) {
+              paste(x["Biosample.ID"], x["Biosample.Description"])
+          })
+      else
+          legend = list("none selected")
+      
+     wrapDiv = function(i)  {
+       style =  paste("width: 20px; height: 20px; border:1px solid #000; background-color: ",
+              rgba(radar_colors[i]),
+              ";  display: inline-block; vertical-align: top; margin: 5px;")
+      
+       tags$li( div( tags$span(style=style), tags$span(style="text-align: left;",  legend[i])))
+     }
+      
+      tags$ul(style="list-style: none;", lapply(1:length(legend), wrapDiv))
+    }
   })
 
-  SelectedDB = function() {
-    s = UserState$selected
-    if (is.null(s))
-       s = c(1,2)
-    else
-       s = as.vector(unlist(s))
-    db = DB()
-    db[s,]
-  }
 
 
   plotRadarChart = function(zodiacLayout) {
-    data = SelectedDB()
-    data = data[, hallmark_columns]
-
-    # Add max and min of each topic to show on the plot!
-    data=rbind(rep(1000,5) , rep(0,5) , data)
-
-    colors_border=c( rgb(0.2,0.5,0.5,0.9), rgb(0.8,0.2,0.5,0.9) ,     rgb(0.7,0.5,0.1,0.9) )
-    colors_in=c( rgb(0.2,0.5,0.5,0.4), rgb(0.8,0.2,0.5,0.4) , rgb(0.7,0.5,0.1,0.4) )
-    if (zodiacLayout) {
-        image=zodiac
-        rotate=-18.0
-        scale=0.66
-        no_vlabels=TRUE
-    } else {
-        image=NULL
-        rotate=0
-        scale=1.0
-        no_vlabels=FALSE
+    data = UserState$SelectedDB
+    if (!is.null(data)) {
+      data = data[, hallmark_columns]
+  
+      # Add max and min of each topic to show on the plot!
+      data=rbind(rep(1000,5) , rep(0,5) , data)
+  
+      colors_border=c( rgb(0.2,0.5,0.5,0.9), rgb(0.8,0.2,0.5,0.9) ,     rgb(0.7,0.5,0.1,0.9) )
+      colors_in=c( rgb(0.2,0.5,0.5,0.4), rgb(0.8,0.2,0.5,0.4) , rgb(0.7,0.5,0.1,0.4) )
+      if (zodiacLayout) {
+          image=zodiac
+          rotate=-18.0
+          scale=0.66
+          no_vlabels=TRUE
+      } else {
+          image=NULL
+          rotate=0
+          scale=1.0
+          no_vlabels=FALSE
+      }
+  
+      radarchart( data  , axistype=1 ,  no_vlabels=no_vlabels,
+          image=image, rotate=rotate, scale=scale, 
+          caxislabels=c(0,250,500, 750,1000),
+          #custom polygon
+          pcol=radar_colors , plwd=4 , plty=1,
+  
+          #custom the grid
+          cglcol="grey", cglty=1, axislabcol="grey", cglwd=0.8,
+  
+          #custom labels
+          vlcex=0.8 
+      )
     }
-
-    radarchart( data  , axistype=1 ,  no_vlabels=no_vlabels,
-        image=image, rotate=rotate, scale=scale, 
-        caxislabels=c(0,250,500, 750,1000),
-        #custom polygon
-        pcol=radar_colors , plwd=4 , plty=1,
-
-        #custom the grid
-        cglcol="grey", cglty=1, axislabcol="grey", cglwd=0.8,
-
-        #custom labels
-        vlcex=0.8 
-    )
   }
 
   observeEvent( input$file1,  {
@@ -409,7 +384,8 @@ function(input, output, session) {
 
 
     output$study <- DT::renderDataTable( { 
-        DT::datatable(StudiesDB, selection = "single", rownames= FALSE)
+        selected = as.list(mgrep(RestoreState$studies, rownames(StudiesDB)))
+        DT::datatable(StudiesDB, selection = list(selected = selected), rownames=FALSE)
     })
 
     output$Scored <- DT::renderDataTable( { 
@@ -433,32 +409,54 @@ function(input, output, session) {
    observe({
         # Trigger this observer every time an input changes
         reactiveValuesToList(input)
+
+        # phase 1 stduy
+        sel = 1
+        if (!is.null(input$study_rows_selected))
+            sel = input$study_rows_selected
+        studies = StudiesDB[sel,"ImmPort.Study.ID"]
+        UserState$studies = studies
+
+        # phase 2 all samples
+        samples = mgrep(studies, SamplesDB$ImmPort.Study.ID)
+        db = SamplesDB[samples, ]
+        if (! is.null(UserState$uploadedScored)) {
+            user = UserState$uploadedScored
+            db = rbind(user, db)
+        }
+        rownames(db) = db$Biosample.ID
+
+
+        # phase 3 selected samples
+        UserState$DB = db
+        
+        sel = input$DB_rows_selected
+        if (is.null(sel)) {
+          sel = RestoreState$samples
+        } 
+        UserState$SelectedDB = db[sel,]
+        UserState$selected = rownames(UserState$SelectedDB )
+        
         session$doBookmark()
   })
+
+  onRestored(function(state) {
+    RestoreState$selected = strsplit(state$values$samples,",")
+    RestoreState$studies = state$values$studies
+  })
+  
   onBookmarked(function(url) {
         updateQueryString(url)
   })
 
-  observeEvent(input$DB_rows_selected, {
-    s = rownames(DB())
-    n = input$DB_rows_selected
-    UserState$selected = s[n]
- })
 
   onBookmark(function(state) {
     state$values$savedTime <- Sys.time()
-    db = DB()
-    samples = db$Biosample.ID[input$DB_rows_selected]
-    state$values$samples <- paste(samples, collapse=",")
-    state$values$study <- study_selected()
+    state$values$samples <- paste(UserState$selected, collapse=",")
+    state$values$studies <- UserState$studies
   })
 
 
-  onRestored(function(state) {
-    XXXselected = strsplit(state$values$samples,",")
-    UserState$study = state$values$study
-  })
-  
   
 
 } # end of server.R singletonfunction

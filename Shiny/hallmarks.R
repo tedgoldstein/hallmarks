@@ -165,10 +165,11 @@ read.table.hot = function(name)  {
 DB = aggregateScores
 
 SamplesDB = aggregateScores()
+rownames(SamplesDB)  = SamplesDB$Biosample.ID
 StudiesDB = SamplesDB[,c("Cancer.Type", "Study.Title", "ImmPort.Study.ID", "PI")]
 StudiesDB$Cancer.Type = lapply(StudiesDB$Cancer.Type, simpleCap)
 StudiesDB = unique(StudiesDB)
-rownames(StudiesDB) = StudiesDB$ImmPort.Study.Id
+rownames(StudiesDB) = StudiesDB$ImmPort.Study.ID
 # rownames(StudiesDB) = do.call(paste, StudiesDB)
 
 

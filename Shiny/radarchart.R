@@ -55,7 +55,6 @@ radarchart <- function(df, axistype=0, scale=1, no_vlabels=FALSE,
   PAXISLABELS <- df[1,1:n]
   if (!is.null(paxislabels)) PAXISLABELS <- paxislabels
   if (axistype==2|axistype==3|axistype==5) {
-   browser()
    if (is.null(palcex)) text(xx[1:n], yy[1:n], PAXISLABELS, col=axislabcol) else
    text(xx[1:n], yy[1:n], PAXISLABELS, col=axislabcol, cex=palcex)
 
