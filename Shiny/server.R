@@ -16,12 +16,12 @@ urlMap = list(
 )
 
 mgrep = function(l, x)
-   unique(unlist(lapply(unlist(l), 
+   sort(unique(unlist(lapply(unlist(l), 
         function(pat)  {
             g = grep(pat, x)
             g
         }
-    )))
+    ))))
 
 
 hallmark_columns = c(
@@ -162,13 +162,19 @@ computeSignatureScore = function(X, cancer) {
 
 spaceFix <- function (x) gsub("[._]", " ", x)
 
+
 function(input, output, session) {
+
   UserState <- reactiveValues();
 
-  RestoreState <- reactiveValues();
-  RestoreState$studies = list(rownames(StudiesDB)[1])
-  RestoreState$samples = rownames(SamplesDB)[c(1,2)]
+  UserState$studies_selected <- 1
+  UserState$studies <- StudiesDB[1, "ImmPort.Study.ID"]
   
+  UserState$DB = SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort.Study.ID), ]
+
+  UserState$samples_selected = c(1,2)
+  UserState$samples = rownames(SamplesDB)[c(1,2)]
+
   setBookmarkExclude(c(
         # "Cancer",
         # want this "study",
@@ -233,21 +239,9 @@ function(input, output, session) {
 
 
   output$DB <- DT::renderDataTable( {
-    db = UserState$DB[,displayed_columns]
-    db = transformURL(db)
-
-    sel = RestoreState$selected
-
-    if (length(sel) == 0) {
-        selected = c(1, 2)
-    } else {
-        selected = unlist(lapply(unlist(sel), 
-            function(pat)  {
-                grep(pat, db$Biosample.ID)
-            }
-        ))
-    }
-    DT::datatable(db, selection = list(selected = selected), escape=FALSE  )
+    selecteddb = UserState$DB[ mgrep(UserState$studies, UserState$DB$ImmPort.Study.ID), displayed_columns ]
+    selecteddb = transformURL(selecteddb)
+    DT::datatable(selecteddb, selection = list(selected = as.list(UserState$samples_selected)), escape=FALSE  )
   })
 
  zodiac = readPNG("Zodiac800.png")
@@ -276,7 +270,7 @@ function(input, output, session) {
 
 
   output$Legend = renderUI( {
-    db = UserState$SelectedDB
+    db = UserState$DB[unlist(UserState$samples),]
     if (!is.null(db)) {
       ldb = db[, legend_columns]
   
@@ -303,9 +297,8 @@ function(input, output, session) {
 
 
   plotRadarChart = function(zodiacLayout) {
-    data = UserState$SelectedDB
+    data = UserState$DB[ unlist(UserState$samples), hallmark_columns ]
     if (!is.null(data)) {
-      data = data[, hallmark_columns]
   
       # Add max and min of each topic to show on the plot!
       data=rbind(rep(1000,5) , rep(0,5) , data)
@@ -324,18 +317,19 @@ function(input, output, session) {
           no_vlabels=FALSE
       }
   
-      radarchart( data  , axistype=1 ,  no_vlabels=no_vlabels,
-          image=image, rotate=rotate, scale=scale, 
-          caxislabels=c(0,250,500, 750,1000),
-          #custom polygon
-          pcol=radar_colors , plwd=4 , plty=1,
-  
-          #custom the grid
-          cglcol="grey", cglty=1, axislabcol="grey", cglwd=0.8,
-  
-          #custom labels
-          vlcex=0.8 
-      )
+      if (nrow(data) > 2)
+        radarchart( data  , axistype=1 ,  no_vlabels=no_vlabels,
+            image=image, rotate=rotate, scale=scale, 
+            caxislabels=c(0,250,500, 750,1000),
+            #custom polygon
+            pcol=radar_colors , plwd=4 , plty=1,
+    
+            #custom the grid
+            cglcol="grey", cglty=1, axislabcol="grey", cglwd=0.8,
+    
+            #custom labels
+            vlcex=0.8 
+        )
     }
   }
 
@@ -383,9 +377,8 @@ function(input, output, session) {
   })
 
 
-    output$study <- DT::renderDataTable( { 
-        selected = as.list(mgrep(RestoreState$studies, rownames(StudiesDB)))
-        DT::datatable(StudiesDB, selection = list(selected = selected), rownames=FALSE)
+  output$study <- DT::renderDataTable( { 
+        DT::datatable(StudiesDB, selection = list(selected = as.list(UserState$studies_selected)), rownames=FALSE)
     })
 
     output$Scored <- DT::renderDataTable( { 
@@ -406,43 +399,23 @@ function(input, output, session) {
    )
 
 
-   observe({
-        # Trigger this observer every time an input changes
-        reactiveValuesToList(input)
-
-        # phase 1 stduy
-        sel = 1
-        if (!is.null(input$study_rows_selected))
-            sel = input$study_rows_selected
-        studies = StudiesDB[sel,"ImmPort.Study.ID"]
-        UserState$studies = studies
-
-        # phase 2 all samples
-        samples = mgrep(studies, SamplesDB$ImmPort.Study.ID)
-        db = SamplesDB[samples, ]
-        if (! is.null(UserState$uploadedScored)) {
-            user = UserState$uploadedScored
-            db = rbind(user, db)
-        }
-        rownames(db) = db$Biosample.ID
 
 
-        # phase 3 selected samples
-        UserState$DB = db
-        
-        sel = input$DB_rows_selected
-        if (is.null(sel)) {
-          sel = RestoreState$samples
-        } 
-        UserState$SelectedDB = db[sel,]
-        UserState$selected = rownames(UserState$SelectedDB )
-        
-        session$doBookmark()
-  })
+#   observe({
+#      recalculate()
+#      session$doBookmark()
+#  })
 
   onRestored(function(state) {
-    RestoreState$selected = strsplit(state$values$samples,",")
-    RestoreState$studies = state$values$studies
+
+    UserState$studies <<- as.vector(state$values$studies)
+    UserState$studies_selected <- as.vector(mgrep(UserState$studies, StudiesDB$ImmPort.Study.ID))
+    UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort.Study.ID), ]
+
+    samples <- strsplit(state$values$samples,",")
+    UserState$samples = as.vector(samples)
+    UserState$samples_selected = as.vector(unlist(mgrep(samples, UserState$DB$Biosample.ID)))
+
   })
   
   onBookmarked(function(url) {
@@ -451,13 +424,23 @@ function(input, output, session) {
 
 
   onBookmark(function(state) {
-    state$values$savedTime <- Sys.time()
-    state$values$samples <- paste(UserState$selected, collapse=",")
+    # state$values$savedTime <- Sys.time()
     state$values$studies <- UserState$studies
+    state$values$samples <- paste(UserState$samples, collapse=",")
   })
 
+   observeEvent(input$study_cell_clicked, { 
+     UserState$studies = StudiesDB[input$study_rows_selected,  "ImmPort.Study.ID"]
+     UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort.Study.ID), ]
+     
+     session$doBookmark()
+   })
+
+   observeEvent(input$DB_cell_clicked, { 
+     UserState$samples <<- UserState$DB[input$DB_rows_selected, "Biosample.ID"]
+     session$doBookmark()
+   })
 
   
 
 } # end of server.R singletonfunction
-
