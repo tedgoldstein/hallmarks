@@ -239,9 +239,9 @@ function(input, output, session) {
 
 
   output$DB <- DT::renderDataTable( {
-    selecteddb = UserState$DB[ mgrep(UserState$studies, UserState$DB$ImmPort.Study.ID), displayed_columns ]
-    selecteddb = transformURL(selecteddb)
-    DT::datatable(selecteddb, selection = list(selected = as.list(UserState$samples_selected)), escape=FALSE  )
+    db = UserState$DB[ , displayed_columns ]
+    db = transformURL(db)
+    DT::datatable(db, selection = list(selected = as.list(UserState$samples_selected)), escape=FALSE  )
   })
 
  zodiac = readPNG("Zodiac800.png")
@@ -389,6 +389,17 @@ function(input, output, session) {
     })
 
 
+   observe({
+        db = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort.Study.ID), ]
+        if (! is.null(UserState$uploadedScored)) {
+            user = UserState$uploadedScored
+            db = rbind(user, db)
+            rownames(db) = db$Biosample.ID
+        }
+        UserState$DB = db
+   })
+
+
    output$downloadSamples <- downloadHandler(
         filename = function() {
           paste("OMFS.csv", sep = "")
@@ -398,16 +409,7 @@ function(input, output, session) {
         }
    )
 
-
-
-
-#   observe({
-#      recalculate()
-#      session$doBookmark()
-#  })
-
   onRestored(function(state) {
-
     UserState$studies <<- as.vector(state$values$studies)
     UserState$studies_selected <- as.vector(mgrep(UserState$studies, StudiesDB$ImmPort.Study.ID))
     UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort.Study.ID), ]
