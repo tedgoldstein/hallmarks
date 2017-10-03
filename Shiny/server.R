@@ -1,6 +1,6 @@
 library(dplyr)
 library(pracma)
-library(png)
+# library(png)
 
 options(shiny.maxRequestSize=50*1024^2) 
 
