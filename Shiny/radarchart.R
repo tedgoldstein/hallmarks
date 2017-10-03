@@ -23,14 +23,13 @@ radarchart <- function(df, axistype=0, scale=1, no_vlabels=FALSE,
     dfmin <- apply(df, 2, min)
     df <- rbind(dfmax, dfmin, df)
   }
-  if (!is.null(image)) {
-      plot(NA,xlim=c(0,nrow(image)),ylim=c(0,ncol(image)), type = "n", xlab = "", ylab = "", frame.plot=FALSE, axes=FALSE, asp=1 )
-      rasterImage(image,0,0,nrow(image),ncol(image))
-  }
 
   par(bg=NA) # no backround
   plot(c(-1.2/scale, 1.2/scale), c(-1.2/scale, 1.2/scale), type="n", frame.plot=FALSE, axes=FALSE, 
        xlab="", ylab="", main=title, asp=1, ...) # define x-y coordinates without any plot
+
+  if (!is.null(image))
+      rasterImage(image, -1.2/scale, -1.2/scale, 1.2/scale, 1.2/scale)
   theta <- seq(90 + rotate, 450 + rotate, length=n+1)*pi/180
   theta <- theta[1:n]
   xx <- cos(theta)
