@@ -271,7 +271,7 @@ function(input, output, session) {
     list(src = outfile,
          width = width,
          height = height,
-         alt = "This is alternate text")
+         alt = "Please select Studies or Upload data to see the visualization")
   }, deleteFile = TRUE)
 
 
