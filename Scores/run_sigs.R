@@ -92,6 +92,7 @@ process = function() {
               } else {
                   score[1,j] = round( (posScale * raw[j]) + 500);
               }
+              score[1,j] = max(score[1,j], 1) # never less than one
           }
           colnames(score) = colnames(X);
           row.names(score) = signature$hallmark;
@@ -99,6 +100,9 @@ process = function() {
           # return(scores);
        }
     }
+    # The Hallmark is the geometric mean.  Note, all scores must be greater than zero.
+    Hallmark = apply(scores, 2, function(x)  round(exp(mean(log(x)))))
+    scores = data.frame(Hallmark, t(scores));
     return (scores);
 }
 
@@ -111,5 +115,5 @@ scores = process()
 
 out = file(args[[3]], open="w");
 cat("Biosample.ID\t", file=out)
-write.table(t(scores), file=out, sep="\t")
+write.table(scores, file=out, sep="\t")
 close(out)

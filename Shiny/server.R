@@ -37,6 +37,7 @@ hallmark_columns = c(
     "Evading_immune_destruction")
 
 legend_columns = c(
+     "Hallmark",
      "Biosample.ID",
      "Type",
      "Subtype", 
@@ -48,6 +49,9 @@ legend_columns = c(
 # ImmPort.Study.ID	PubMed	Study.Title	PI	Biosample.ID	Experiment.ID	Cohort	Repository.Accession	Type	Subtype	Biosample.Name	Biosample.Description	Species	Strain
 
 displayed_columns  = c(
+    "Hallmark",
+    "Biosample.ID",
+    "Biosample.Description",
     "Type",
     "Subtype",
     "Species",
@@ -57,10 +61,8 @@ displayed_columns  = c(
     #"PubMed",
     "Experiment.ID",
     "Cohort",
-    "Biosample.ID",
     #"Repository.Accession",
     "Biosample.Name",
-    #"Biosample.Description",
     "Strain",
     "Evading_growth_suppressors",
     "Evading_immune_destruction",
@@ -283,11 +285,11 @@ function(input, output, session) {
           legend = list("none selected")
       
      wrapDiv = function(i)  {
-       style =  paste("width: 20px; height: 20px; border:1px solid #000; background-color: ",
+       style =  paste("width: 30px; height: 25; border:1px solid #000; background-color: ",
               rgba(radar_colors[i]),
-              ";  display: inline-block; vertical-align: top; margin: 5px;")
+              ";  display: inline-block; vertical-align: top; margin: 5px; font-weight:bold;")
       
-       tags$li( div( tags$span(style=style), tags$span(style="text-align: left;",  legend[i])))
+       tags$li( tags$span( tags$span(style=style, tags$em(ldb[i, "Hallmark"])),tags$span(style="text-align: left;",  legend[i])))
      }
       
       tags$ul(style="list-style: none;", lapply(1:length(legend), wrapDiv))
