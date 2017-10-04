@@ -36,8 +36,11 @@ radarchart <- function(df, axistype=0, scale=1, no_vlabels=FALSE,
   xx <- cos(theta)
   yy <- sin(theta)
   CGap <- ifelse(centerzero, 0, 1)
+
+  clineWeight = c(0.5, 0.5, 1.2, 0.5, 0.5)
   for (i in 0:seg) { # complementary guide lines, dotted navy line by default
-    polygon(xx*(i+CGap)/(seg+CGap), yy*(i+CGap)/(seg+CGap), lty=cglty, lwd=cglwd, border=cglcol)
+    # polygon(xx*(i+CGap)/(seg+CGap), yy*(i+CGap)/(seg+CGap), lty=cglty, lwd=cglwd, border=cglcol)
+    polygon(xx*(i+CGap)/(seg+CGap), yy*(i+CGap)/(seg+CGap), lty=cglty, lwd=clineWeight[i+1], border=cglcol)
     if (axistype==1|axistype==3) CAXISLABELS <- paste(i/seg*100,"(%)")
     if (axistype==4|axistype==5) CAXISLABELS <- sprintf("%3.2f",i/seg)
     if (!is.null(caxislabels)&(i<length(caxislabels))) CAXISLABELS <- caxislabels[i+1]
