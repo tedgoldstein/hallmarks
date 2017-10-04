@@ -169,13 +169,18 @@ function(input, output, session) {
 
   UserState <- reactiveValues();
 
+  
   UserState$studies_selected <- 1
   UserState$studies <- StudiesDB[1, "ImmPort.Study.ID"]
   
-  UserState$DB = SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort.Study.ID), ]
-
-  UserState$samples_selected = c(1,2)
-  UserState$samples = rownames(SamplesDB)[c(1,2)]
+  initSamples = function() {
+    db = SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort.Study.ID), ]
+    UserState$DB = db
+    sel = c(which.min(db$Hallmark), which.max(db$Hallmark))
+    UserState$samples_selected = sel
+    UserState$samples = rownames(db)[sel]
+  }
+  initSamples()
 
   setBookmarkExclude(c(
         # "Cancer",
@@ -289,7 +294,7 @@ function(input, output, session) {
               rgba(radar_colors[i]),
               ";  display: inline-block; vertical-align: top; margin: 5px; font-weight:bold;")
       
-       tags$li( tags$span( tags$span(style=style, tags$em(ldb[i, "Hallmark"])),tags$span(style="text-align: left;",  legend[i])))
+       tags$li( tags$span( tags$span(class="text-center", style=style, tags$em(ldb[i, "Hallmark"])),tags$span(style="text-align: left;",  legend[i])))
      }
       
       tags$ul(style="list-style: none;", lapply(1:length(legend), wrapDiv))
@@ -414,7 +419,9 @@ function(input, output, session) {
   onRestored(function(state) {
     UserState$studies <<- as.vector(state$values$studies)
     UserState$studies_selected <- as.vector(mgrep(UserState$studies, StudiesDB$ImmPort.Study.ID))
-    UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort.Study.ID), ]
+    # UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort.Study.ID), ]
+    initSamples()
+    
 
     samples <- strsplit(state$values$samples,",")
     UserState$samples = as.vector(samples)
@@ -436,6 +443,7 @@ function(input, output, session) {
    observeEvent(input$study_cell_clicked, { 
      UserState$studies = StudiesDB[input$study_rows_selected,  "ImmPort.Study.ID"]
      UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort.Study.ID), ]
+     initSamples()
      
      session$doBookmark()
    })
