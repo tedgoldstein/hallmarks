@@ -126,6 +126,7 @@ computeSignatureScore = function(X, cancer) {
             } else {
                 score[1,j] = round( (posScale * raw[j]) + 500);
             }
+            score[1,j] = max(score[1,j], 1) # never less than one
         }
         scores = rbind(scores, score);
     }
@@ -137,8 +138,10 @@ computeSignatureScore = function(X, cancer) {
     scores = scores[,1:10]
 
     n = nrow(scores)
-    scores = cbind(scores, 
-        data.frame(
+    # The Hallmark is the geometric mean.  Note, all scores must be greater than zero.
+    Hallmark = apply(scores, 1, function(x)  round(exp(mean(log(x)))))
+    df =  data.frame(
+            Hallmark = Hallmark,
             Biosample.ID = colnames(X),
             Cancer.Type =rep( simpleCap(signature$cancer), n), 
 
@@ -154,7 +157,8 @@ computeSignatureScore = function(X, cancer) {
             Repository.Accession = rep( "none", n),
             Biosample.Name = rep( "none", n),
             Biosample.Description = rep( "none", n),
-            Strain = rep( "none", n), stringsAsFactors=FALSE));
+            Strain = rep( "none", n), stringsAsFactors=FALSE);
+    scores = cbind(scores, df)
 
     return (scores)
 }
@@ -214,7 +218,7 @@ function(input, output, session) {
       apply(sapply(col, col2rgb)/255, 2, function(x) rgb(x[1], x[2], x[3], alpha=alpha))  
   }
 
-  radar_colors= add.alpha(rainbow(8))
+  radar_colors= add.alpha(rainbow(1000))
 
 
   rgba = function(x) { 
@@ -290,11 +294,12 @@ function(input, output, session) {
           legend = list("none selected")
       
      wrapDiv = function(i)  {
-       style =  paste("width: 30px; height: 25; border:1px solid #000; background-color: ",
-              rgba(radar_colors[i]),
+       hallmark = ldb[i, "Hallmark"]
+       hallmark_color = rgba(radar_colors[hallmark])
+       style =  paste("width: 30px; height: 25; border:1px solid #000; background-color: ", hallmark_color,
               ";  display: inline-block; vertical-align: top; margin: 5px; font-weight:bold;")
       
-       tags$li( tags$span( tags$span(class="text-center", style=style, tags$em(ldb[i, "Hallmark"])),tags$span(style="text-align: left;",  legend[i])))
+       tags$li( tags$span( tags$span(class="text-center", style=style, tags$em(hallmark)),tags$span(style="text-align: left;",  legend[i])))
      }
       
       tags$ul(style="list-style: none;", lapply(1:length(legend), wrapDiv))
@@ -305,6 +310,8 @@ function(input, output, session) {
 
   plotRadarChart = function(zodiacLayout) {
     data = UserState$DB[ unlist(UserState$samples), hallmark_columns ]
+    hallmarks = UserState$DB[ unlist(UserState$samples), "Hallmark" ]
+    hallmark_colors = radar_colors[hallmarks]
     if (!is.null(data)) {
   
       # Add max and min of each topic to show on the plot!
@@ -329,7 +336,7 @@ function(input, output, session) {
             image=image, rotate=rotate, scale=scale, 
             caxislabels=c(0,250,500, 750,1000),
             #custom polygon
-            pcol=radar_colors , plwd=4 , plty=1,
+            pcol=hallmark_colors , plwd=4 , plty=1,
     
             #custom the grid
             cglcol="grey", cglty=1, axislabcol="grey", cglwd=0.8,
