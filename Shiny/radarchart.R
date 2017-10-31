@@ -4,7 +4,7 @@
 # Maintainer: Minato Nakazawa <minato-nakazawa at umin.net>
 # License:    GPL-2 | GPL-3 [expanded from: GPL (≥ 2)]
 # URL:    http://minato.sip21c.org/msb/
-# NeedsCompilation:   no
+# eedsCompilation:   no
 # Materials:  NEWS
 # CRAN checks:    fmsb results
 
@@ -36,18 +36,26 @@ radarchart <- function(df, axistype=0, scale=1, no_vlabels=FALSE,
   yy <- sin(theta)
   CGap <- ifelse(centerzero, 0, 1)
 
-  clineWeight = c(0.5, 0.5, 1.2, 0.5, 0.5)
+  clineWeight = c(0.5, 0.5, 4, 0.5, 0.5)
+  clineType = c(1, 1, 2, 1, 1)
+  normalVsCancerLabels =c ("", "Normal", "Cancer", "", "")
+
   for (i in 0:seg) { # complementary guide lines, dotted navy line by default
     # polygon(xx*(i+CGap)/(seg+CGap), yy*(i+CGap)/(seg+CGap), lty=cglty, lwd=cglwd, border=cglcol)
-    polygon(xx*(i+CGap)/(seg+CGap), yy*(i+CGap)/(seg+CGap), lty=cglty, lwd=clineWeight[i+1], border=cglcol)
+    polygon(xx*(i+CGap)/(seg+CGap), yy*(i+CGap)/(seg+CGap), lty=clineType[i+1], lwd=clineWeight[i+1], border=cglcol)
+
     if (axistype==1|axistype==3) CAXISLABELS <- paste(i/seg*100,"(%)")
     if (axistype==4|axistype==5) CAXISLABELS <- sprintf("%3.2f",i/seg)
     if (!is.null(caxislabels)&(i<length(caxislabels))) CAXISLABELS <- caxislabels[i+1]
     if (axistype==1|axistype==3|axistype==4|axistype==5) {
-     if (is.null(calcex)) text(-0.05, (i+CGap)/(seg+CGap), CAXISLABELS, col=axislabcol) else
-     text(-0.05, (i+CGap)/(seg+CGap), CAXISLABELS, col=axislabcol, cex=calcex)
+     if (is.null(calcex)) text(-0.05, -(i+CGap)/(seg+CGap), CAXISLABELS, col=axislabcol) else
+     text(0.05, -(i+CGap)/(seg+CGap), CAXISLABELS, col=axislabcol, cex=calcex)
+
+     # text(0.05, (i+CGap +0.5)/(seg+CGap), normalVsCancerLabels[i+1], col=axislabcol, cex=calcex)
     }
   }
+  text(0.0, 0.3, "Normal", col=axislabcol, cex=calcex)
+  text(0.0, 0.8, "Cancer", col=axislabcol, cex=calcex)
   if (centerzero) {
     arrows(0, 0, xx*1, yy*1, lwd=cglwd, lty=cglty, length=0, col=cglcol)
   }

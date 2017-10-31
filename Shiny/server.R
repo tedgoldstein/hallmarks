@@ -58,12 +58,12 @@ displayed_columns  = c(
     #"Study.Title",
     #"PI",
     #"ImmPort.Study.ID",
-    #"PubMed",
+    "PubMed",
     "Experiment.ID",
     "Cohort",
     #"Repository.Accession",
     "Biosample.Name",
-    "Strain",
+    # "Strain",
     "Evading_growth_suppressors",
     "Evading_immune_destruction",
     "Genome_instability",
@@ -288,7 +288,7 @@ function(input, output, session) {
       if (nrow(ldb) > 0)
           # legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
           legend =  apply(ldb, 1, function(x) {
-              paste(x["Biosample.ID"], x["Biosample.Description"])
+              paste(x["Biosample.ID"], x["Biosample.Name"], x["Biosample.Description"])
           })
       else
           legend = list("none selected")
@@ -339,7 +339,7 @@ function(input, output, session) {
             pcol=hallmark_colors , plwd=4 , plty=1,
     
             #custom the grid
-            cglcol="grey", cglty=1, axislabcol="grey", cglwd=0.8,
+            cglcol="grey", cglty=2, axislabcol="grey", cglwd=0.8,
     
             #custom labels
             vlcex=0.8 
