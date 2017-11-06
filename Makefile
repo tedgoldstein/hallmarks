@@ -1,5 +1,5 @@
 foo:
-	(cd genelists/GO; make)
+	(cd GeneLists make)
 	(cd Signatures; make)
 	(cd Scores; make)
 

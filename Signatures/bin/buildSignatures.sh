@@ -1,4 +1,5 @@
-#!/bin/bash s='Models'
+#!/bin/bash 
+s='Models'
 t='tmp'
 
 i='../GeneLists/data/hallmarks.genes'

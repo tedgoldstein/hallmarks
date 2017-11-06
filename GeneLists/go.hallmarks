@@ -3,7 +3,7 @@ sh go.curl "Genome_instability" "GO:0006281,GO:0031570,GO:0045005,GO:0006282"
 
 #Broaden to all metabolism GO:0008152,
 # sh go.curl "Reprogramming_energy_metabolism" "GO:0006006,GO:0046323,GO:0006096,GO:0071456"
-sh go.curl "Reprogramming_energy_metabolism" "GO:0008152,0006006,GO:0046323,GO:0006096,GO:0071456"
+sh go.curl "Reprogramming_energy_metabolism" "GO:0008152,GO:0006006,GO:0046323,GO:0006096,GO:0071456"
 
 sh go.curl "Evading_immune_destruction" "GO:0006955,GO:0002418,GO:0002837,GO:0020012,GO:0006897"
 

@@ -4,7 +4,7 @@
 
 from __future__ import print_function
 
-import re, sys
+import re, sys, pdb
 
 
 def mangle(specific):
@@ -42,6 +42,8 @@ def processLine(phe, general):
             if re.search(e, phe, re.IGNORECASE):
                 sample = phe.split("\t")[0];
                 if general == "TCGA":
+                    if int(sample[13:15]) > 9:
+                        continue
                     specific = general + "." + mangle(pat["cancer"])
                 else:
                     specific = general + "." + mangle(pat["base"])
