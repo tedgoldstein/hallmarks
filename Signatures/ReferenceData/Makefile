@@ -1,4 +1,8 @@
-got.data: TCGA.RSEM GTEX.RSEM NETWORK HUGO
+
+got.data: TCGA.RSEM GTEX.RSEM NETWORK HUGO NormalizedReferenceData.txt 
+
+NormalizedReferenceData.txt : NormalizeReferenceData.R TCGA.RSEM GTEX.RSEM ../../GeneLists/genes.gmt 
+	Rscript NormalizeReferenceData.R
 
 TCGA.RSEM: get
 	./get "https://toil.xenahubs.net/download/tcga_RSEM_Hugo_norm_count.gz" TCGA.RSEM

@@ -1,1 +1,1 @@
-curl -s "https://www.ebi.ac.uk/QuickGO-Old/GAnnotation?tax=9606&relType=IPO&goid=$2&format=tsv" > $1
+echo curl -s "https://www.ebi.ac.uk/QuickGO-Old/GAnnotation?tax=9606&relType=IPO&goid=$2&format=tsv" ">" $1

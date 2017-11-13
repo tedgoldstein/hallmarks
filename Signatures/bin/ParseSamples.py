@@ -41,12 +41,14 @@ def processLine(phe, general):
         for e in pat[general]:
             if re.search(e, phe, re.IGNORECASE):
                 sample = phe.split("\t")[0];
+                specific =  mangle(pat["base"]) + "." + mangle(pat["cancer"]) # add normals to base
                 if general == "TCGA":
                     if int(sample[13:15]) > 9:
-                        continue
-                    specific = general + "." + mangle(pat["cancer"])
+                        specific = "normal" + "." + specific
+                    else:
+                        specific = "tumor"  + "." + specific
                 else:
-                    specific = general + "." + mangle(pat["base"])
+                    specific = "normal"  + "." + specific
                 if not specific in samplelists:
                     samplelists[specific] = set();
                 samplelists[specific].add(sample)

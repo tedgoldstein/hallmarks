@@ -1,85 +1,127 @@
+library(data.table)
 library(gelnet)
 library(RJSONIO)
+library(Matrix)
+library(igraph)
+library(dplyr)
+library(qusage)
 
-# gelNet.R input_data input_dichotomy input_network output_model
+setwd("/Users/tgoldstein/GitHub/oct31/hallmarks/Signatures/")
+# gelNet.R tissue cancer
 
 
 
-rescale= function(b) {
-  maxb = max(b)
-  minb = min(b)
-  cat("\nmaxb=")
-  cat(maxb);
-  cat("\nminb=")
-  cat(minb);
-  cat("\n\n")
-  c = 6/(maxb-minb)*(b-minb)-3
-  d = scale(c, center = T, scale = T);
-  return(d);
+# LOAD UP THE DATASETS
+if (!exists("need")) {
+    need = readLines("../GeneLists/genes.all")
 }
 
-
-
-args <- commandArgs(trailingOnly = TRUE)
-cat(args)
-cat("\n")
-
-#load up parameters, X, y, A
-#   arg[1] X is the data
-#   arg[2] y is the phenotype states
-#   arg[3] A is the Adjacency matric
-#   arg[4] output_model is the name of the output file
-#   arg[5] hallmark is the hallmark annotation
-#   arg[6] is the healthy tissue annotation
-#   arg[7] is the cancer tissue annotation
-
-cat(args[1]);
-X <- read.table(args[1], header=TRUE, row.names=1)
-X <- rescale(X)
-X <- t(X);
-cat(args[2]);
-y <- as.vector(scan(args[2]))
-yy <- factor( y > 0, levels=c(TRUE,FALSE) )
-cat(args[3]);
-A <- read.table(args[3], header=TRUE, row.names=1);
-output_model = args[4]
-hallmark = args[5]
-tissue = args[6]
-cancer = args[7]
-genes <- row.names(A)
-L <- adj2nlapl(A)
-X <- X[,genes]
-
-# run the regression
-model <- gelnet( X, yy, 0.1, 1, P=L, balanced=TRUE)
-
-# clean up and remove zero weights
-nonzero <- which(model$w != 0)
-weights <- model$w[nonzero]
-weight_names <- names(model$w)[nonzero]
-names(weights) <- weight_names
-
-model$name = output_model;
-model$w = weights;
-model$numberOfGenes = length(weights);
-model$hallmark = hallmark;
-model$tissue = tissue;
-model$cancer = cancer;
-
-genes = labels(model$w);
-XX = X[,genes];
-samples=gsub("\\.", "-", row.names(X));
-if (length(model$w) == 1) {
-  raw= XX * model$w + model$b;
-} else {
-  raw= XX %*% model$w + model$b;
+if (!exists("NETWORK")) {
+    NETWORK = unique(read.table("ReferenceData/NETWORK", as.is=TRUE)[,-2])
+    NETWORK = NETWORK %>% filter(V1 %in% need) %>% filter(V3 %in% need)
 }
 
-reference = data.frame( samples=samples, rawscore=raw,  labels= y);
-reference = with(reference, reference[order(rawscore),]);
+if (!exists("NormalizedReferenceData")) {
+  # NormalizedReferenceData = fread("ReferenceData/NormalizedReferenceData.txt", sep="\t")
+  # rn = unlist(NormalizedReferenceData [,1])
+  # NormalizedReferenceData = as.data.table(NormalizedReferenceData[,-1])
+  # rownames(NormalizedReferenceData) = rn
+  load("ReferenceData/NormalizedReferenceData.rda")
+  m = na.omit(NormalizedReferenceData)
+  NormalizedReferenceData =  as.data.frame(m)
+  rownames(NormalizedReferenceData) = rownames(m)
+  rm(m)
+}
 
-model$reference = reference
+if (!exists("hallmark.genes")) {
+    hallmark.genes = read.gmt("../GeneLists/genes.gmt")
+}
 
-# save
-write(toJSON(model), file=args[4])
+graphFor = function(genes)  {
+  subnet = NETWORK %>% filter(V1 %in% genes) %>% filter(V3 %in% genes)
+  graph = as.undirected(graph.edgelist(  as.matrix(subnet) ))
+  m = as.matrix(get.adjacency(graph))
+  m
+}
 
+foreachHallmark = function(hallmark, X, y, yy, tissue, cancer) {
+
+    # filter to this hallmarks's genes
+    X = na.omit(X)
+    genes = rownames(X)
+    genes = intersect(genes,  hallmark.genes[[hallmark]])
+    X = X[genes,]
+
+    A = graphFor(genes)
+
+    # further restrict to the genes in the graph
+    X = X[rownames(A),]
+    
+    L <- adj2nlapl(A)
+
+    # run the regression
+    model <- gelnet( t(X), y, 0.1, 1, P=L, balanced=TRUE )
+
+    # clean up and remove zero weights
+    nonzero <- which(model$w != 0)
+    weights <- model$w[nonzero]
+    weight_names <- names(model$w)[nonzero]
+    names(weights) <- weight_names
+
+    output_model = paste0( "Models/", tissue, ".to.", cancer, ".", hallmark, ".signature")
+    model$name = output_model;
+    model$w = weights;
+    model$numberOfGenes = length(weights);
+    model$hallmark = hallmark;
+    model$tissue = tissue;
+    model$cancer = cancer;
+
+    modelGenes = labels(model$w);
+    testX = t(as.matrix(X[modelGenes,]))
+ 
+    raw = testX %*% model$w + model$b;
+    sp = sign(raw) * yy
+    accuracy = sum(sp>0) / length(raw)
+    
+    samples=gsub("\\.", "-", colnames(X));
+    reference = data.frame( samples=samples, rawscore=raw,  labels= y);
+    reference = with(reference, reference[order(reference$rawscore),]);
+
+    model$reference = reference
+    model$accuracy = accuracy
+
+    # save
+    write(toJSON(model), file=output_model)
+}
+
+foreachCancer = function(tissue, cancer, X)  {
+    n = paste0("lists/normal.", tissue, ".",  cancer)
+    t = paste0("lists/tumor.",  tissue, ".",  cancer)
+    samples = colnames(X)
+
+    normalSamples = intersect(samples, readLines( n ))
+    tumorSamples = intersect(samples, readLines( t ))
+
+    nt = c(normalSamples, tumorSamples)
+    X = X[, nt]
+    y = factor(c(rep(TRUE,length(normalSamples)), rep(FALSE,length(tumorSamples))))
+    yy = c(rep(-1,length(normalSamples)), rep(1,length(tumorSamples)))
+    names(y) = nt
+    names(yy) = nt
+
+    hallmark = "Evading_growth_suppressors"
+    # foreachHallmark(hallmark, X, y, yy, tissue, cancer)
+    lapply( names(hallmark.genes), function(hallmark) foreachHallmark(hallmark, X, y, yy, tissue, cancer))
+}
+
+# foreachCancer("Colon", "colon_adenocarcinoma", NormalizedReferenceData) 
+
+print(system.time(
+  lapply(list.files(path = "lists", pattern = "tumor.*" ), function(fn) {
+      fn = unlist(strsplit(x=fn,split = "[.]"))
+      tissue = fn[2]
+      cancer = fn[3]
+      print(cancer)
+      foreachCancer(tissue, cancer, NormalizedReferenceData) 
+  })
+))

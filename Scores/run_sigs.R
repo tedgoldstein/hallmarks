@@ -8,6 +8,9 @@ library(RJSONIO)
 args <- commandArgs(trailingOnly = TRUE)
 # args = c("lung_adenocarcinoma")
 # args = c("colon_adenocarcinoma", "t.xls")
+# args = c("colon_adenocarcinoma", "tpm_matrix_colon_superOrtho_meta.tsv.tmp", "tpm_matrix_colon_superOrtho_meta.tsv.score")
+# args = c("colon_adenocarcinoma", "ReferenceData/TCGA.colon.data", "Colon.score")
+
 
 printf <- function(...) cat(sprintf(...))
 
@@ -19,7 +22,13 @@ rank.normalize <- function(x, FUN=qnorm, ties.method = "average", na.action) {
         stop("'na.action' must be a function")
     }
     x <- na.action(x)
-    FUN(rank(x, ties.method = ties.method)/(length(x)+1))
+    ret = FUN(rank(x, ties.method = ties.method)/(length(x)+1))
+    ret
+}
+
+# LOAD UP THE DATASETS
+if (!exists("need")) {
+    need = readLines("../GeneLists/genes.all")
 }
 
 
@@ -71,7 +80,7 @@ process = function() {
         
         should  <- names(signature$w)
         genes    <- intersect(should, possible)
-        # printf("%s %3.0f%%\n", hallmark, (length(genes)/length(should))* 100.0);
+        printf("%s have=%d should=%d %3.0f%%\n", hallmark, length(genes),length(should), (length(genes)/length(should))* 100.0);
         if (TRUE  || length(genes) == length(should)) {
           score = data.frame();
           posScale <- signature$posScale;
@@ -82,7 +91,7 @@ process = function() {
           #cat(XX);
       
       
-          raw = XX %*% w + signature$b;
+          raw = -XX %*% w + signature$b;
           heat= XX * w + signature$b;
       
           for (j in 1:length(raw)) {
