@@ -2,7 +2,7 @@ genes.all : genes.gmt
 	cut -f3- genes.gmt | tr '\t' '\n' | sort | uniq | sed '/^$$/d' > $@
 
 
-genes.gmt: got.hallmarks
+genes.gmt: 
 	mkdir -p data/hallmarks.genes
 	mkdir -p data/hallmarks
 	sh -v go.filter

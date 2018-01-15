@@ -1,4 +1,28 @@
 Whole_Blood	acute myeloid leukemia
+Adrenal Gland	adrenocortical cancer
+Bladder	bladder urothelial carcinoma
 Brain	brain lower grade glioma
+Breast Mammary Tissue Breast female	breast invasive carcinoma FEMALE
+Breast Mammary Tissue Breast male	breast invasive carcinoma MALE
+Cervix	cervical|endocervical cancer
 Colon	colon adenocarcinoma
+Spleen|Blood	diffuse large B cell lymphoma
+Esophagus	glioblastoma multiforme
+Kidney Cortex	kidney chromophobe
+Kidney Cortex	kidney clear cell carcinoma
+Kidney Cortex	kidney papillary cell carcinoma
+Liver	liver hepatocellular carcinoma
 Lung	lung adenocarcinoma
+Lung	lung squamous cell carcinoma
+Lung	mesothelioma
+Ovary	ovarian serous cystadenocarcinoma
+Pancreas	pancreatic adenocarcinoma
+Adrenal Gland	pheochromocytoma | paraganglioma
+Prostate	prostate adenocarcinoma
+Skin	skin cutaneous melanoma
+Stomach	stomach adenocarcinoma
+Testis	testicular germ cell tumor
+Thyroid	thymoma
+Thyroid	thyroid carcinoma
+Uterus|Fallopian	uterine carcinosarcoma
+Uterus|Fallopian	uterine corpus endometrioid carcinoma
