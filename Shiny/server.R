@@ -77,16 +77,28 @@ displayed_columns  = c(
 
 
 
-rescale= function(a) {
-  scale(a, center = TRUE, scale = TRUE);
+
+rank.normalize <- function(x, FUN=qnorm, ties.method = "average", na.action) {
+    if (missing(na.action)) {
+        na.action <- get(getOption("na.action"))
+    }
+    if(! is.function(na.action)) {
+        stop("'na.action' must be a function")
+    }
+    x <- na.action(x)
+    ret = FUN(rank(x, ties.method = ties.method)/(length(x)+1))
+    ret
 }
+
+
 
 
 computeSignatureScore = function(X, cancer) {
     signaturesForTissue <- Filter(function(ss) ss$cancer == cancer, Signatures$signatures)
 
     possible = row.names(X)
-    X <- apply(X, 2, rescale)
+    X = apply(X, 2, function(x) scale(rank.normalize(x), scale=TRUE, center=TRUE))
+
     row.names(X) <- possible
     X <- data.frame(X)
     scores = data.frame()
@@ -164,6 +176,9 @@ computeSignatureScore = function(X, cancer) {
 }
 
 
+geometric_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
 
 
 spaceFix <- function (x) gsub("[._]", " ", x)
@@ -347,6 +362,7 @@ function(input, output, session) {
     }
   }
 
+
   observeEvent( input$file1,  {
     # input$file1 will be NULL initially. After the user selects
     # and uploads a file, it will be a data frame with 'name',
@@ -372,17 +388,21 @@ function(input, output, session) {
     colnames(d) = cn
 
     if ( any(d > 1000) ) {
+      #it appears to be raw counts
         d = d %>% group_by(gene_id) %>% summarise_all(funs(sum))
         e = "Aggregating duplicate rows by summing counts"
+    } else if ( all(d >= 0 & d <= 20) ) {
+      #it appears to be normalized log in some way
+        d = d %>% group_by(gene_id) %>% summarise_all(funs(geometric_mean))
+        e = "Aggregating duplicate rows by geometric mean averaging"
+
     } else {
         d = d %>% group_by(gene_id) %>% summarise_all(funs(mean))
         e = "Aggregating duplicate rows by averaging"
     }
 
 
-    cat("\nbefore\n")
     d = as.data.frame(d)
-    cat("\nafter\n")
     rownames(d) <- d[,1]
     d[,1] <- NULL
 
