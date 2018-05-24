@@ -52,6 +52,7 @@ function(request) {
 
 # Define UI for random distribution application 
 fluidPage(
+  tags$head(includeScript("google-analytics.js")),
     
   titlePanel("Oncology Model Fidelity Score"),
   
