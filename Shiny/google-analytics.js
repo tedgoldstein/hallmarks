@@ -5,6 +5,6 @@
 		
 		ga('create', 'UA-111103018-1', 'auto', {'allowLinker': true});
 		ga('require', 'linker');
-		ga('linker:autoLink', ['comphealth.ucsf.edu', 'xcell.ucsf.edu'] );
+		ga('linker:autoLink', ['oncologymodels.org', 'xcell.ucsf.edu'] );
 		ga('send', 'pageview');
 		if (window.location.search.indexOf("?_ga=") == 0) { window.location.search = "" }
