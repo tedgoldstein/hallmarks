@@ -1,7 +1,7 @@
 
-got.data: TCGA.RSEM GTEX.RSEM NETWORK HUGO NormalizedReferenceData.txt 
+got.data: TCGA.RSEM GTEX.RSEM NETWORK HUGO NormalizedReferenceData.rda 
 
-NormalizedReferenceData.txt : NormalizeReferenceData.R TCGA.RSEM GTEX.RSEM ../../GeneLists/genes.gmt 
+NormalizedReferenceData.rda : NormalizeReferenceData.R TCGA.RSEM GTEX.RSEM ../../GeneLists/genes.gmt 
 	Rscript NormalizeReferenceData.R
 
 TCGA.RSEM: get
@@ -10,8 +10,10 @@ TCGA.RSEM: get
 GTEX.RSEM: get
 	./get "https://toil.xenahubs.net/download/gtex_RSEM_Hugo_norm_count.gz" GTEX.RSEM
 
-NETWORK: get
-	./get "http://www.pathwaycommons.org/archives/PC2/v8/PathwayCommons.8.All.BINARY.SIF.hgnc.txt.sif.gz" NETWORK
-
-HUGO: 
-	wget "ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/hgnc_complete_set.txt" -O HUGO
+# These are now checked into the repo.
+#
+# NETWORK: get
+# 	./get "http://www.pathwaycommons.org/archives/PC2/v8/PathwayCommons.8.All.BINARY.SIF.hgnc.txt.sif.gz" NETWORK
+# 
+# HUGO: 
+# 	wget "ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/hgnc_complete_set.txt" -O HUGO

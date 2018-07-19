@@ -4,9 +4,10 @@ library(RJSONIO)
 library(Matrix)
 library(igraph)
 library(dplyr)
-library(qusage)
 
-setwd("/Users/tgoldstein/GitHub/oct31/hallmarks/Signatures/")
+source("https://bioconductor.org/biocLite.R")
+biocLite("qusage")
+
 # gelNet.R tissue cancer
 
 

@@ -1,5 +1,4 @@
 library(data.table)
-setwd("/Users/tgoldstein/GitHub/oct31/hallmarks/Signatures/ReferenceData")
 
 need = readLines("../../GeneLists/genes.all")
 
