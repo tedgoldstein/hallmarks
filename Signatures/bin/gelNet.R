@@ -5,8 +5,7 @@ library(Matrix)
 library(igraph)
 library(dplyr)
 
-source("https://bioconductor.org/biocLite.R")
-biocLite("qusage")
+library(qusage)
 
 # gelNet.R tissue cancer
 

@@ -2,7 +2,7 @@
 
 
 signatures : lists/modellist  ../GeneLists/data/hallmarks.genes # step1
-	# bash  ./bin/buildSignatures.sh  ./GeneLists/data/hallmarks.genes
+	python2.7 bin/ParseSamples.py
 	Rscript ./bin/gelNet.R 
 	Rscript ./bin/processSigs.R Models/*.signature
 
