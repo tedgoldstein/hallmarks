@@ -1,0 +1,1 @@
+/usr/local/bin/R -e "shiny::runApp('Shiny', launch.browser = TRUE)"
