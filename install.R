@@ -23,7 +23,8 @@ insallIfnecessary( c(
     "RJSONIO",
     "shiny",
     "shinyjqui",
-    "urltools"
+    "urltools",
+    "DT"
     )
 )
 if( ! require( "qusage" , character.only = TRUE ) ){
