@@ -32,7 +32,7 @@ hallmark_columns = c(
     "Genome_instability",
     "Sustained_angiogenesis",
     "Tissue_invasion_and_metastasis",
-    "Tumor.promoting_inflammation",
+    "Tumor_promoting_inflammation",
     "Replicative_immortality",
     "Evading_immune_destruction")
 
@@ -52,7 +52,7 @@ displayed_columns  = c(
     "Hallmark",
     "Biosample.ID",
     "Biosample.Description",
-    "Type",
+    #"Type",
     "Subtype",
     "Species",
     #"Study.Title",
@@ -73,7 +73,7 @@ displayed_columns  = c(
     "Sustained_angiogenesis",
     "Sustaining_proliferative_signaling",
     "Tissue_invasion_and_metastasis",
-    "Tumor.promoting_inflammation")
+    "Tumor_promoting_inflammation")
 
 
 
@@ -128,8 +128,8 @@ computeSignatureScore = function(X, cancer) {
       
     
     
-        raw = XX %*% w + signature$b;
-        heat= XX * w + signature$b;
+        raw = -XX %*% w + signature$b;
+        #heat= XX * w + signature$b;
     
         for (j in 1:length(raw)) {
             value = raw[j];

@@ -1,0 +1,27 @@
+ImmPort Study ID	PubMed	Study Title	PI	Biosample ID	Experiment ID	Cohort	Repository Accession	Type	Subtype	Biosample Name	Biosample Description	Species	Strain	Cancer Type
+GSE67647	26701265	Tumor ASO1 n1	Spector	SRX981419	GSE67647	Tumor ASO1 n1	GSM1652634	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Tumor ASO1 n1	polyA+ RNA	Mus musculus	Tumor ASO1 n1	Breast Cancer
+GSE67647	26701265	Tumor ASO1 n2	Spector	SRX981420	GSE67647	Tumor ASO1 n2	GSM1652635	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Tumor ASO1 n2	polyA+ RNA	Mus musculus	Tumor ASO1 n2	Breast Cancer
+GSE67647	26701265	Tumor ASO1 n3	Spector	SRX981421	GSE67647	Tumor ASO1 n3	GSM1652636	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Tumor ASO1 n3	polyA+ RNA	Mus musculus	Tumor ASO1 n3	Breast Cancer
+GSE67647	26701265	Tumor ASO2 n1	Spector	SRX981422	GSE67647	Tumor ASO2 n1	GSM1652637	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Tumor ASO2 n1	polyA+ RNA	Mus musculus	Tumor ASO2 n1	Breast Cancer
+GSE67647	26701265	Tumor ASO2 n2	Spector	SRX981423	GSE67647	Tumor ASO2 n2	GSM1652638	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Tumor ASO2 n2	polyA+ RNA	Mus musculus	Tumor ASO2 n2	Breast Cancer
+GSE67647	26701265	Tumor ASO2 n3	Spector	SRX981424	GSE67647	Tumor ASO2 n3	GSM1652639	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Tumor ASO2 n3	polyA+ RNA	Mus musculus	Tumor ASO2 n3	Breast Cancer
+GSE67647	26701265	Tumor ASO2 n4	Spector	SRX981425	GSE67647	Tumor ASO2 n4	GSM1652640	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Tumor ASO2 n4	polyA+ RNA	Mus musculus	Tumor ASO2 n4	Breast Cancer
+GSE67647	26701265	Tumor scASO n1	Spector	SRX981426	GSE67647	Tumor scASO n1	GSM1652641	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Tumor scASO n1	polyA+ RNA	Mus musculus	Tumor scASO n1	Breast Cancer
+GSE67647	26701265	Tumor scASO n2	Spector	SRX981427	GSE67647	Tumor scASO n2	GSM1652642	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Tumor scASO n2	polyA+ RNA	Mus musculus	Tumor scASO n2	Breast Cancer
+GSE67647	26701265	Tumor scASO n3	Spector	SRX981428	GSE67647	Tumor scASO n3	GSM1652643	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Tumor scASO n3	polyA+ RNA	Mus musculus	Tumor scASO n3	Breast Cancer
+GSE67647	26701265	Organoid ASO1 n1	Spector	SRX981429	GSE67647	Organoid ASO1 n1	GSM1652644	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid ASO1 n1	polyA+ RNA	Mus musculus	Organoid ASO1 n1	Breast Cancer
+GSE67647	26701265	Organoid ASO1 n2	Spector	SRX981430	GSE67647	Organoid ASO1 n2	GSM1652645	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid ASO1 n2	polyA+ RNA	Mus musculus	Organoid ASO1 n2	Breast Cancer
+GSE67647	26701265	Organoid ASO1 n3	Spector	SRX981431	GSE67647	Organoid ASO1 n3	GSM1652646	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid ASO1 n3	polyA+ RNA	Mus musculus	Organoid ASO1 n3	Breast Cancer
+GSE67647	26701265	Organoid ASO1 n4	Spector	SRX981432	GSE67647	Organoid ASO1 n4	GSM1652647	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid ASO1 n4	polyA+ RNA	Mus musculus	Organoid ASO1 n4	Breast Cancer
+GSE67647	26701265	Organoid ASO2 n1	Spector	SRX981433	GSE67647	Organoid ASO2 n1	GSM1652648	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid ASO2 n1	polyA+ RNA	Mus musculus	Organoid ASO2 n1	Breast Cancer
+GSE67647	26701265	Organoid ASO2 n2	Spector	SRX981434	GSE67647	Organoid ASO2 n2	GSM1652649	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid ASO2 n2	polyA+ RNA	Mus musculus	Organoid ASO2 n2	Breast Cancer
+GSE67647	26701265	Organoid ASO2 n3	Spector	SRX981435	GSE67647	Organoid ASO2 n3	GSM1652650	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid ASO2 n3	polyA+ RNA	Mus musculus	Organoid ASO2 n3	Breast Cancer
+GSE67647	26701265	Organoid ASO2 n4	Spector	SRX981436	GSE67647	Organoid ASO2 n4	GSM1652651	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid ASO2 n4	polyA+ RNA	Mus musculus	Organoid ASO2 n4	Breast Cancer
+GSE67647	26701265	Organoid scASO n1	Spector	SRX981437	GSE67647	Organoid scASO n1	GSM1652652	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid scASO n1	polyA+ RNA	Mus musculus	Organoid scASO n1	Breast Cancer
+GSE67647	26701265	Organoid scASO n2	Spector	SRX981438	GSE67647	Organoid scASO n2	GSM1652653	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid scASO n2	polyA+ RNA	Mus musculus	Organoid scASO n2	Breast Cancer
+GSE67647	26701265	Organoid scASO n3	Spector	SRX981439	GSE67647	Organoid scASO n3	GSM1652654	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid scASO n3	polyA+ RNA	Mus musculus	Organoid scASO n3	Breast Cancer
+GSE67647	26701265	Organoid scASO n4	Spector	SRX981440	GSE67647	Organoid scASO n4	GSM1652655	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid scASO n4	polyA+ RNA	Mus musculus	Organoid scASO n4	Breast Cancer
+GSE67647	26701265	Organoid Mock n1	Spector	SRX981441	GSE67647	Organoid Mock n1	GSM1652656	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid Mock n1	polyA+ RNA	Mus musculus	Organoid Mock n1	Breast Cancer
+GSE67647	26701265	Organoid Mock n2	Spector	SRX981442	GSE67647	Organoid Mock n2	GSM1652657	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid Mock n2	polyA+ RNA	Mus musculus	Organoid Mock n2	Breast Cancer
+GSE67647	26701265	Organoid Mock n3	Spector	SRX981443	GSE67647	Organoid Mock n3	GSM1652658	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid Mock n3	polyA+ RNA	Mus musculus	Organoid Mock n3	Breast Cancer
+GSE67647	26701265	Organoid Mock n4	Spector	SRX981444	GSE67647	Organoid Mock n4	GSM1652659	Breast Cancer	Invasive Breast Carcinoma (BRCA)	Organoid Mock n4	polyA+ RNA	Mus musculus	Organoid Mock n4	Breast Cancer

@@ -1,0 +1,11 @@
+ImmPort Study ID	PubMed	Study Title	PI	Biosample ID	Experiment ID	Cohort	Repository Accession	Type	Subtype	Biosample Name	Biosample Description	Species	Strain	Cancer Type
+GSE101859	28753606	RhoJ WT rep 1	None	SRX3033803	GSE101859	RhoJ WT rep 1	GSM2717318	Melanoma	Cutaneous Melanoma (SKCM)	RhoJ WT rep 1	sorted_genelist.csv	Mus musculus	RhoJ WT rep 1	Melanoma
+GSE101859	28753606	RhoJ WT rep 2	None	SRX3033804	GSE101859	RhoJ WT rep 2	GSM2717319	Melanoma	Cutaneous Melanoma (SKCM)	RhoJ WT rep 2	sorted_genelist.csv	Mus musculus	RhoJ WT rep 2	Melanoma
+GSE101859	28753606	RhoJ WT rep 3	None	SRX3033805	GSE101859	RhoJ WT rep 3	GSM2717320	Melanoma	Cutaneous Melanoma (SKCM)	RhoJ WT rep 3	sorted_genelist.csv	Mus musculus	RhoJ WT rep 3	Melanoma
+GSE101859	28753606	RhoJ WT rep 4	None	SRX3033806	GSE101859	RhoJ WT rep 4	GSM2717321	Melanoma	Cutaneous Melanoma (SKCM)	RhoJ WT rep 4	sorted_genelist.csv	Mus musculus	RhoJ WT rep 4	Melanoma
+GSE101859	28753606	RhoJ WT rep 5	None	SRX3033807	GSE101859	RhoJ WT rep 5	GSM2717322	Melanoma	Cutaneous Melanoma (SKCM)	RhoJ WT rep 5	sorted_genelist.csv	Mus musculus	RhoJ WT rep 5	Melanoma
+GSE101859	28753606	RhoJ KO rep 1	None	SRX3033808	GSE101859	RhoJ KO rep 1	GSM2717323	Melanoma	Cutaneous Melanoma (SKCM)	RhoJ KO rep 1	sorted_genelist.csv	Mus musculus	RhoJ KO rep 1	Melanoma
+GSE101859	28753606	RhoJ KO rep 2	None	SRX3033809	GSE101859	RhoJ KO rep 2	GSM2717324	Melanoma	Cutaneous Melanoma (SKCM)	RhoJ KO rep 2	sorted_genelist.csv	Mus musculus	RhoJ KO rep 2	Melanoma
+GSE101859	28753606	RhoJ KO rep 3	None	SRX3033810	GSE101859	RhoJ KO rep 3	GSM2717325	Melanoma	Cutaneous Melanoma (SKCM)	RhoJ KO rep 3	sorted_genelist.csv	Mus musculus	RhoJ KO rep 3	Melanoma
+GSE101859	28753606	RhoJ KO rep 4	None	SRX3033811	GSE101859	RhoJ KO rep 4	GSM2717326	Melanoma	Cutaneous Melanoma (SKCM)	RhoJ KO rep 4	sorted_genelist.csv	Mus musculus	RhoJ KO rep 4	Melanoma
+GSE101859	28753606	RhoJ KO rep 5	None	SRX3033812	GSE101859	RhoJ KO rep 5	GSM2717327	Melanoma	Cutaneous Melanoma (SKCM)	RhoJ KO rep 5	sorted_genelist.csv	Mus musculus	RhoJ KO rep 5	Melanoma

@@ -1,0 +1,16 @@
+ImmPort Study ID	PubMed	Study Title	PI	Biosample ID	Experiment ID	Cohort	Repository Accession	Type	Subtype	Biosample Name	Biosample Description	Species	Strain	Cancer Type
+GSE70135	26888865	WT 1	None	SRX1068204	GSE70135	WT 1	GSM1717423	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	WT 1	None	Mus musculus	WT 1	Stomach Adenocarcinoma
+GSE70135	26888865	WT 2	None	SRX1068205	GSE70135	WT 2	GSM1717424	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	WT 2	None	Mus musculus	WT 2	Stomach Adenocarcinoma
+GSE70135	26888865	WT 3	None	SRX1068206	GSE70135	WT 3	GSM1717425	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	WT 3	None	Mus musculus	WT 3	Stomach Adenocarcinoma
+GSE70135	26888865	C2mE 1	None	SRX1068207	GSE70135	C2mE 1	GSM1717426	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	C2mE 1	None	Mus musculus	C2mE 1	Stomach Adenocarcinoma
+GSE70135	26888865	C2mE 2	None	SRX1068208	GSE70135	C2mE 2	GSM1717427	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	C2mE 2	None	Mus musculus	C2mE 2	Stomach Adenocarcinoma
+GSE70135	26888865	C2mE 3	None	SRX1068209	GSE70135	C2mE 3	GSM1717428	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	C2mE 3	None	Mus musculus	C2mE 3	Stomach Adenocarcinoma
+GSE70135	26888865	Gan 1	None	SRX1068210	GSE70135	Gan 1	GSM1717429	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	Gan 1	None	Mus musculus	Gan 1	Stomach Adenocarcinoma
+GSE70135	26888865	Gan 2	None	SRX1068211	GSE70135	Gan 2	GSM1717430	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	Gan 2	None	Mus musculus	Gan 2	Stomach Adenocarcinoma
+GSE70135	26888865	Gan 3	None	SRX1068212	GSE70135	Gan 3	GSM1717431	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	Gan 3	None	Mus musculus	Gan 3	Stomach Adenocarcinoma
+GSE70135	26888865	Gan 1 (MyD88-/-)	None	SRX1068213	GSE70135	Gan 1 (MyD88-/-)	GSM1717432	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	Gan 1 (MyD88-/-)	None	Mus musculus	Gan 1 (MyD88-/-)	Stomach Adenocarcinoma
+GSE70135	26888865	Gan 2 (MyD88-/-)	None	SRX1068214	GSE70135	Gan 2 (MyD88-/-)	GSM1717433	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	Gan 2 (MyD88-/-)	None	Mus musculus	Gan 2 (MyD88-/-)	Stomach Adenocarcinoma
+GSE70135	26888865	Gan 3 (MyD88-/-)	None	SRX1068215	GSE70135	Gan 3 (MyD88-/-)	GSM1717434	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	Gan 3 (MyD88-/-)	None	Mus musculus	Gan 3 (MyD88-/-)	Stomach Adenocarcinoma
+GSE70135	26888865	BMT-Gan 1 (from MyD88-/-)	None	SRX1068216	GSE70135	BMT-Gan 1 (from MyD88-/-)	GSM1717435	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	BMT-Gan 1 (from MyD88-/-)	None	Mus musculus	BMT-Gan 1 (from MyD88-/-)	Stomach Adenocarcinoma
+GSE70135	26888865	BMT-Gan 2 (from MyD88-/-)	None	SRX1068217	GSE70135	BMT-Gan 2 (from MyD88-/-)	GSM1717436	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	BMT-Gan 2 (from MyD88-/-)	None	Mus musculus	BMT-Gan 2 (from MyD88-/-)	Stomach Adenocarcinoma
+GSE70135	26888865	BMT-Gan 3 (from MyD88-/-)	None	SRX1068218	GSE70135	BMT-Gan 3 (from MyD88-/-)	GSM1717437	Stomach Adenocarcinoma	Stomach Adenocarcinoma (STAD)	BMT-Gan 3 (from MyD88-/-)	None	Mus musculus	BMT-Gan 3 (from MyD88-/-)	Stomach Adenocarcinoma

@@ -5,10 +5,10 @@ NormalizedReferenceData.rda : NormalizeReferenceData.R TCGA.RSEM GTEX.RSEM ../..
 	Rscript NormalizeReferenceData.R
 
 TCGA.RSEM: get
-	./get "https://toil.xenahubs.net/download/tcga_RSEM_Hugo_norm_count.gz" TCGA.RSEM
+	./get "https://toil.xenahubs.net/download/tcga_RSEM_Hugo_norm_count.gz" /data/OMF/RSEM/latest/TCGA.RSEM
 
 GTEX.RSEM: get
-	./get "https://toil.xenahubs.net/download/gtex_RSEM_Hugo_norm_count.gz" GTEX.RSEM
+	./get "https://toil.xenahubs.net/download/gtex_RSEM_Hugo_norm_count.gz" /data/OMF/RSEM/latest/GTEX.RSEM
 
 # These are now checked into the repo.
 #

@@ -9,7 +9,5 @@
 
 ./prepareRNAseq lung_adenocarcinoma SDY923_Wong_lung.txt tpm_matrix_lung-Pd1_superOrtho_meta.tsv
 
-./prepareRNAseq brain_lower_grade_glioma SDY1148_Miller_brainGlioma.txt tpm_matrix_microglia_superOrtho_meta.tsv
-
 ./prepareRNAseq brain_lower_grade_glioma SDY1085_Gutmann_brainMicroglia.txt tpm_matrix_microglia_superOrtho_meta.tsv
 

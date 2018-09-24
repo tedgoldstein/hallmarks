@@ -31,6 +31,7 @@ function(request) {
                     accept = c(
                       'text/tab-separated-values',
                       'text/plain',
+		      '.txt',
                       '.csv',
                       '.tsv'
                     )),

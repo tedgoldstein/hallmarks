@@ -1,8 +1,8 @@
-Biosample.ID	"Hallmark"	"Evading_growth_suppressors"	"Evading_immune_destruction"	"Genome_instability"	"Replicative_immortality"	"Reprogramming_energy_metabolism"	"Resisting_cell_death"	"Sustained_angiogenesis"	"Sustaining_proliferative_signaling"	"Tissue_invasion_and_metastasis"	"Tumor.promoting_inflammation"
-"SRR1799853"	356	258	619	300	601	618	389	314	152	295	338
-"SRR1799854"	348	288	645	326	515	575	391	293	134	294	321
-"SRR1799855"	340	272	652	328	504	585	370	305	121	296	300
-"SRR1799856"	393	286	726	418	552	610	418	328	173	331	387
-"SRR1799857"	320	255	644	323	518	612	352	282	98	257	270
-"SRR1799858"	362	282	659	411	531	560	411	354	116	312	320
-"SRR1799859"	327	245	676	266	522	602	341	327	102	290	305
+Biosample.ID	"Hallmark"	"Evading_growth_suppressors"	"Evading_immune_destruction"	"Genome_instability"	"Replicative_immortality"	"Reprogramming_energy_metabolism"	"Resisting_cell_death"	"Sustained_angiogenesis"	"Sustaining_proliferative_signaling"	"Tissue_invasion_and_metastasis"	"Tumor_promoting_inflammation"
+"SRR1799853"	355	257	617	300	600	618	388	314	151	294	337
+"SRR1799854"	346	286	644	326	514	574	390	292	132	293	319
+"SRR1799855"	339	270	650	328	504	583	369	304	120	295	299
+"SRR1799856"	392	285	725	417	552	609	417	328	172	329	386
+"SRR1799857"	319	253	643	323	517	611	351	282	97	256	269
+"SRR1799858"	360	281	658	411	531	559	409	353	115	310	318
+"SRR1799859"	326	243	674	265	521	601	340	327	101	288	304

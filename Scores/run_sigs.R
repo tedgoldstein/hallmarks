@@ -88,11 +88,10 @@ process = function() {
           w = signature$w[genes]
       
           XX <- t(X[genes,])
-          #cat(XX);
       
       
           raw = -XX %*% w + signature$b;
-          heat= XX * w + signature$b;
+          #heat= XX * w + signature$b;
       
           for (j in 1:length(raw)) {
               value = raw[j];

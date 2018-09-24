@@ -1,0 +1,4 @@
+ImmPort Study ID	PubMed	Study Title	PI	Biosample ID	Experiment ID	Cohort	Repository Accession	Type	Subtype	Biosample Name	Biosample Description	Species	Strain	Cancer Type
+GSE84264	27589875	YUMM1.1	Thomas Graeber	SRX1925784	GSE84264	YUMM1.1	GSM2230611	Melanoma	Cutaneous Melanoma (SKCM)	YUMM1.1	None	Mus musculus	YUMM1.1	Melanoma
+GSE84264	27589875	YUMM2.1	Thomas Graeber	SRX1925785	GSE84264	YUMM2.1	GSM2230612	Melanoma	Cutaneous Melanoma (SKCM)	YUMM2.1	None	Mus musculus	YUMM2.1	Melanoma
+GSE84264	27589875	YUMM1.7	Thomas Graeber	SRX1925786	GSE84264	YUMM1.7	GSM2230613	Melanoma	Cutaneous Melanoma (SKCM)	YUMM1.7	None	Mus musculus	YUMM1.7	Melanoma

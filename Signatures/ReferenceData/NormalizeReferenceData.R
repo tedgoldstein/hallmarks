@@ -45,9 +45,9 @@ read = function(nm) {
 
   
 if (!exists("TCGA.RSEM"))
-  print(system.time(TCGA.RSEM <-- read("TCGA.RSEM")))
+  print(system.time(TCGA.RSEM <-- read("/data/OMF/RSEM/latest/TCGA.RSEM")))
 if (!exists("GTEX.RSEM"))
-  print(system.time(GTEX.RSEM <-- read("GTEX.RSEM")))
+  print(system.time(GTEX.RSEM <-- read("/data/OMF/RSEM/latest/GTEX.RSEM")))
 
 
 # genes = intersect( rownames(GTEX.RSEM), rownames(TCGA.RSEM))

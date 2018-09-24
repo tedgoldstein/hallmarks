@@ -83,8 +83,8 @@ simpleCap <- function(x) {
 }
 
 
-# Signatures <- RJSONIO::fromJSON("../Signatures/signatures")
-Signatures <- RJSONIO::fromJSON("signatures")
+Signatures <- RJSONIO::fromJSON("../Signatures/signatures")
+#Signatures <- RJSONIO::fromJSON("signatures")
 Tissues <- names(Signatures$index)
 
 TCGA = data.frame();
@@ -166,8 +166,8 @@ DB = aggregateScores
 
 SamplesDB = aggregateScores()
 rownames(SamplesDB)  = SamplesDB$Biosample.ID
-StudiesDB = SamplesDB[,c("Cancer.Type", "Study.Title", "ImmPort.Study.ID", "PI")]
-StudiesDB$Cancer.Type = lapply(StudiesDB$Cancer.Type, simpleCap)
+StudiesDB = SamplesDB[,c("PubMed", "Cancer.Type", "Study.Title", "ImmPort.Study.ID", "PI")]
+StudiesDB$Cancer.Type = sapply(StudiesDB$Cancer.Type, simpleCap)
 StudiesDB = unique(StudiesDB)
 rownames(StudiesDB) = StudiesDB$ImmPort.Study.ID
 # rownames(StudiesDB) = do.call(paste, StudiesDB)
