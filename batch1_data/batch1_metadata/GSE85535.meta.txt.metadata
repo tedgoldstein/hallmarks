@@ -1,8 +1,0 @@
-ImmPort Study ID	PubMed	Study Title	PI	Biosample ID	Experiment ID	Cohort	Repository Accession	Type	Subtype	Biosample Name	Biosample Description	Species	Strain	Cancer Type
-GSE85535	28575659	T0_1	ImmunoDynamics group	SRX2015206	GSE85535	T0_1	GSM2276599	Melanoma	Cutaneous Melanoma (SKCM)	T0_1	None	Mus musculus	T0_1	Melanoma
-GSE85535	28575659	T1_IFNg	ImmunoDynamics group	SRX2015207	GSE85535	T1_IFNg	GSM2276600	Melanoma	Cutaneous Melanoma (SKCM)	T1_IFNg	None	Mus musculus	T1_IFNg	Melanoma
-GSE85535	28575659	T2_IFNg	ImmunoDynamics group	SRX2015208	GSE85535	T2_IFNg	GSM2276601	Melanoma	Cutaneous Melanoma (SKCM)	T2_IFNg	None	Mus musculus	T2_IFNg	Melanoma
-GSE85535	28575659	T3_IFNg	ImmunoDynamics group	SRX2015209	GSE85535	T3_IFNg	GSM2276602	Melanoma	Cutaneous Melanoma (SKCM)	T3_IFNg	None	Mus musculus	T3_IFNg	Melanoma
-GSE85535	28575659	T1_NoCyt	ImmunoDynamics group	SRX2015210	GSE85535	T1_NoCyt	GSM2276603	Melanoma	Cutaneous Melanoma (SKCM)	T1_NoCyt	None	Mus musculus	T1_NoCyt	Melanoma
-GSE85535	28575659	T2_NoCyt	ImmunoDynamics group	SRX2015211	GSE85535	T2_NoCyt	GSM2276604	Melanoma	Cutaneous Melanoma (SKCM)	T2_NoCyt	None	Mus musculus	T2_NoCyt	Melanoma
-GSE85535	28575659	T3_NoCyt	ImmunoDynamics group	SRX2015212	GSE85535	T3_NoCyt	GSM2276605	Melanoma	Cutaneous Melanoma (SKCM)	T3_NoCyt	None	Mus musculus	T3_NoCyt	Melanoma

@@ -1,5 +1,0 @@
-ImmPort Study ID	PubMed	Study Title	PI	Biosample ID	Experiment ID	Cohort	Repository Accession	Type	Subtype	Biosample Name	Biosample Description	Species	Strain	Cancer Type
-GSE81941	28938607	R7 parental	None	SRX1801651	GSE81941	R7 parental	GSM2178239	Breast Cancer	Invasive Breast Carcinoma (BRCA)	R7 parental	None	Mus musculus	R7 parental	Breast Cancer
-GSE81941	28938607	R7 Lin-CD29HiCD24+ BCSCs	None	SRX1801652	GSE81941	R7 Lin-CD29HiCD24+ BCSCs	GSM2178240	Breast Cancer	Invasive Breast Carcinoma (BRCA)	R7 Lin-CD29HiCD24+ BCSCs	None	Mus musculus	R7 Lin-CD29HiCD24+ BCSCs	Breast Cancer
-GSE81941	28938607	R7shRon Lin-CD29HiCD24+ BCSCs	None	SRX1801653	GSE81941	R7shRon Lin-CD29HiCD24+ BCSCs	GSM2178241	Breast Cancer	Invasive Breast Carcinoma (BRCA)	R7shRon Lin-CD29HiCD24+ BCSCs	None	Mus musculus	R7shRon Lin-CD29HiCD24+ BCSCs	Breast Cancer
-GSE81941	28938607	R7shHGFL Lin-CD29HiCD24+ BCSCs	None	SRX2315648	GSE81941	R7shHGFL Lin-CD29HiCD24+ BCSCs	GSM2370617	Breast Cancer	Invasive Breast Carcinoma (BRCA)	R7shHGFL Lin-CD29HiCD24+ BCSCs	None	Mus musculus	R7shHGFL Lin-CD29HiCD24+ BCSCs	Breast Cancer

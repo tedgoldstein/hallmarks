@@ -1,9 +1,0 @@
-Biosample.ID	"Hallmark"	"Evading_growth_suppressors"	"Evading_immune_destruction"	"Genome_instability"	"Replicative_immortality"	"Reprogramming_energy_metabolism"	"Resisting_cell_death"	"Sustained_angiogenesis"	"Sustaining_proliferative_signaling"	"Tissue_invasion_and_metastasis"	"Tumor.promoting_inflammation"
-"GSM2547036"	344	278	405	552	700	415	336	181	453	307	153
-"GSM2547037"	360	274	438	549	679	441	361	196	485	337	162
-"GSM2547038"	337	267	405	495	630	409	330	193	460	301	156
-"GSM2547039"	341	268	412	506	635	417	344	196	444	305	158
-"GSM2547040"	341	268	412	518	656	416	337	192	456	310	149
-"GSM2547041"	353	254	424	550	677	445	357	192	481	314	161
-"GSM2547042"	350	274	421	545	674	428	352	190	454	321	155
-"GSM2547043"	358	281	421	551	693	440	364	208	464	317	158
