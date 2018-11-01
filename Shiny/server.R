@@ -43,7 +43,7 @@ legend_columns = c(
      #"Subtype", 
      #"Species", 
      #"Strain",
-     "Cohort", 
+     #"Cohort", 
      #"Biosample_Name", 
      #"Biosample_Description",
      "Cancer_Model"
