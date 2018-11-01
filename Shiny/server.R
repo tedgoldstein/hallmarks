@@ -1,7 +1,6 @@
 library(dplyr)
 library(pracma)
 library(png)
-
 options(shiny.maxRequestSize=50*1024^2) 
 
 urlMap = list(
@@ -9,9 +8,9 @@ urlMap = list(
     "ImmPort.Study.ID"= "http://www.immport.org/immport-open/public/study/study/displayStudyDetail/",
     "Strain"= "http://www.findmice.org/summary?query=",
     "Type"= "https://portal.gdc.cancer.gov/projects/",
-    "Experiment.ID"= "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
-    "Biosample.ID"= "https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?run=",
-    "Repository.Accession"= "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
+    "Experiment_ID"= "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
+    "Biosample_ID"= "https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?run=",
+    "Repository_Accession"= "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
     "PI"= "https://www.google.com/search?q="
 )
 
@@ -38,32 +37,37 @@ hallmark_columns = c(
 
 legend_columns = c(
      "Hallmark",
-     "Biosample.ID",
-     "Type",
-     "Subtype", 
-     "Species", 
-     "Strain",
+     "Repository_Accession",
+     "Biosample_ID",
+     #"Type",
+     #"Subtype", 
+     #"Species", 
+     #"Strain",
      "Cohort", 
-     "Biosample.Name", 
-     "Biosample.Description" )
+     #"Biosample_Name", 
+     #"Biosample_Description",
+     "Cancer_Model"
+)
 # ImmPort.Study.ID	PubMed	Study.Title	PI	Biosample.ID	Experiment.ID	Cohort	Repository.Accession	Type	Subtype	Biosample.Name	Biosample.Description	Species	Strain
 
 displayed_columns  = c(
     "Hallmark",
-    "Biosample.ID",
-    "Biosample.Description",
+    "Biosample_ID",
+    #"Biosample_Description",
     #"Type",
     "Subtype",
     "Species",
-    #"Study.Title",
+    #"Study_Title",
     #"PI",
-    #"ImmPort.Study.ID",
+    #"ImmPort_Study_ID",
     "PubMed",
-    "Experiment.ID",
-    "Cohort",
-    #"Repository.Accession",
-    "Biosample.Name",
-    # "Strain",
+    "Experiment_ID",
+    #"Cohort",
+    "Repository_Accession",
+    #"Biosample_Name",
+    #"Strain",
+    "Cancer_Type",
+    "Cancer_Model",
     "Evading_growth_suppressors",
     "Evading_immune_destruction",
     "Genome_instability",
@@ -74,9 +78,6 @@ displayed_columns  = c(
     "Sustaining_proliferative_signaling",
     "Tissue_invasion_and_metastasis",
     "Tumor_promoting_inflammation")
-
-
-
 
 rank.normalize <- function(x, FUN=qnorm, ties.method = "average", na.action) {
     if (missing(na.action)) {
@@ -96,7 +97,7 @@ rank.normalize <- function(x, FUN=qnorm, ties.method = "average", na.action) {
 computeSignatureScore = function(X, cancer) {
     signaturesForTissue <- Filter(function(ss) ss$cancer == cancer, Signatures$signatures)
 
-    possible = row.names(X)
+    possible = as.character(row.names(X))
     X = apply(X, 2, function(x) scale(rank.normalize(x), scale=TRUE, center=TRUE))
 
     row.names(X) <- possible
@@ -114,7 +115,7 @@ computeSignatureScore = function(X, cancer) {
         hallmark <- signature$hallmark;
         
         should  <- names(signature$w)
-        genes    <- intersect(should, possible)
+        genes    <- as.character(intersect(should, possible))
 
         # printf("should=%d possible=%d actual=%d\n", length(should),length(possible),length(genes));
 
@@ -153,24 +154,27 @@ computeSignatureScore = function(X, cancer) {
     # The Hallmark is the geometric mean.  Note, all scores must be greater than zero.
     Hallmark = apply(scores, 1, function(x)  round(exp(mean(log(x)))))
     df =  data.frame(
-            Hallmark = Hallmark,
-            Biosample.ID = colnames(X),
-            Cancer.Type =rep( simpleCap(signature$cancer), n), 
+	Repository_Accession = colnames(X),
+	Hallmark = Hallmark,
+	Biosample_ID = colnames(X),
+	Cancer_Type = rep( simpleCap(signature$cancer), n), 
+	Cancer_Model = rep( simpleCap(signature$cancer), n),
+	Type = rep( simpleCap(signature$cancer), n),
+	Subtype = rep( simpleCap(signature$tissue), n),
+	Species = rep( "none", n),
+	Study_Title = rep( "none", n),
+	PI = rep( "User", n),
+	ImmPort_Study_ID = rep( "REF", n),
+	PubMed = rep( "none", n),
+	Experiment_ID = rep( "none", n),
+	Cohort = rep( "none", n),
+	Biosample_Name = rep( "none", n),
+	Biosample_Description = rep( "none", n),
+	Strain = rep( "none", n), stringsAsFactors=FALSE
+    );
 
-            Type = rep( simpleCap(signature$cancer), n),
-            Subtype = rep( simpleCap(signature$tissue), n),
-            Species = rep( "none", n),
-            Study.Title = rep( "none", n),
-            PI = rep( "User", n),
-            ImmPort.Study.ID = rep( "REF", n),
-            PubMed = rep( "none", n),
-            Experiment.ID = rep( "none", n),
-            Cohort = rep( "none", n),
-            Repository.Accession = rep( "none", n),
-            Biosample.Name = rep( "none", n),
-            Biosample.Description = rep( "none", n),
-            Strain = rep( "none", n), stringsAsFactors=FALSE);
     scores = cbind(scores, df)
+    scores = scores[,c("Repository_Accession", "Hallmark", "Evading_growth_suppressors", "Evading_immune_destruction", "Genome_instability", "Replicative_immortality", "Reprogramming_energy_metabolism", "Resisting_cell_death", "Sustained_angiogenesis", "Sustaining_proliferative_signaling", "Tissue_invasion_and_metastasis", "Tumor_promoting_inflammation", "Cancer_Model", "ImmPort_Study_ID", "PubMed", "Study_Title", "PI", "Biosample_ID", "Experiment_ID", "Cohort", "Type", "Subtype", "Biosample_Name", "Biosample_Description", "Species", "Strain", "Cancer_Type")]
 
     return (scores)
 }
@@ -187,29 +191,36 @@ spaceFix <- function (x) gsub("[._]", " ", x)
 function(input, output, session) {
 
   UserState <- reactiveValues();
-
   
   UserState$studies_selected <- 1
-  UserState$studies <- StudiesDB[1, "ImmPort.Study.ID"]
-  
+  UserState$studies <- StudiesDB[1, "ImmPort_Study_ID"]
+  db2 =SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort_Study_ID), ] 
+  UserState$DB = db2
+  sel = c(which.min(db2$Hallmark), which.max(db2$Hallmark))
+  UserState$samples_selected = sel
+  UserState$samples = rownames(db2)[sel]
+ 
   initSamples = function() {
-    db = SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort.Study.ID), ]
+    db = SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort_Study_ID), ]
     UserState$DB = db
-    sel = c(which.min(db$Hallmark), which.max(db$Hallmark))
-    UserState$samples_selected = sel
-    UserState$samples = rownames(db)[sel]
+    UserState$samples_selected = 0
+    UserState$samples = rownames(db)[0]
   }
-  initSamples()
+  #initSamples()
 
   setBookmarkExclude(c(
-        # "Cancer",
+        "Cancer",
         # want this "study",
         "file1", 
         "Uploaded", 
         "DB_cell_clicked",
+	"clearStudies",
+	"clearSamples",
         "DB_rows_all",
         "DB_rows_current",
         "DB_rows_selected",
+	"DB_row_last_clicked",
+	"study_row_last_clicked",
         "DB_search",
         "DB_state",
         "Scored_cell_clicked",
@@ -299,11 +310,12 @@ function(input, output, session) {
     db = UserState$DB[unlist(UserState$samples),]
     if (!is.null(db)) {
       ldb = db[, legend_columns]
+      ldb = ldb[order(ldb$Repository_Accession),]
   
       if (nrow(ldb) > 0)
           # legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
           legend =  apply(ldb, 1, function(x) {
-              paste(x["Biosample.ID"], x["Biosample.Name"], x["Biosample.Description"])
+              paste(x["Repository_Accession"], x["Biosample_ID"], x["Cohort"] ,x["Cancer_Model"])
           })
       else
           legend = list("none selected")
@@ -362,7 +374,7 @@ function(input, output, session) {
     }
   }
 
-
+  Mapgene  = read.table("geneSymbol_to_geneID.txt", header = TRUE, sep = "\t")
   observeEvent( input$file1,  {
     # input$file1 will be NULL initially. After the user selects
     # and uploads a file, it will be a data frame with 'name',
@@ -379,7 +391,7 @@ function(input, output, session) {
     
     validate(
         # need to handle case where there are no column labels
-        need(nrow(d) > 50, "Insufficient data. Need thousands of genes"),
+        need(nrow(d) > 100, "Insufficient data. Need thousands of genes"),
         need(ncol(d) > 2, "Insufficient data. First column should be genes, second column should be gene expression"),
         need(class(d[,1]) == "character", "Type of first column must be numeric")
     )
@@ -387,23 +399,31 @@ function(input, output, session) {
     cn[1] = "gene_id"
     colnames(d) = cn
 
+    #convert gene Symbol to geneID
+    genename <- as.character(d[,1])
+    GeneID <- as.character(with(Mapgene, geneID[match(genename,gene)]))
+    d <- cbind(GeneID,d)
+    #remove non-value Gene ID
+    d <- subset(d, GeneID != "NA")
+    d <- subset(d, select = -c(gene_id))
+
     if ( any(d > 1000) ) {
       #it appears to be raw counts
-        d = d %>% group_by(gene_id) %>% summarise_all(funs(sum))
+        d = d %>% group_by(GeneID) %>% summarise_all(funs(sum))
         e = "Aggregating duplicate rows by summing counts"
     } else if ( all(d >= 0 & d <= 20) ) {
       #it appears to be normalized log in some way
-        d = d %>% group_by(gene_id) %>% summarise_all(funs(geometric_mean))
+        d = d %>% group_by(GeneID) %>% summarise_all(funs(geometric_mean))
         e = "Aggregating duplicate rows by geometric mean averaging"
 
     } else {
-        d = d %>% group_by(gene_id) %>% summarise_all(funs(mean))
+        d = d %>% group_by(GeneID) %>% summarise_all(funs(mean))
         e = "Aggregating duplicate rows by averaging"
     }
 
 
     d = as.data.frame(d)
-    rownames(d) <- d[,1]
+    rownames(d) <- as.character(d[,1])
     d[,1] <- NULL
 
     UserState$uploaded = d
@@ -424,11 +444,11 @@ function(input, output, session) {
 
 
    observe({
-        db = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort.Study.ID), ]
+        db = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort_Study_ID), ]
         if (! is.null(UserState$uploadedScored)) {
             user = UserState$uploadedScored
             db = rbind(user, db)
-            rownames(db) = db$Biosample.ID
+            rownames(db) = db$Repository_Accession
         }
         UserState$DB = db
    })
@@ -445,14 +465,14 @@ function(input, output, session) {
 
   onRestored(function(state) {
     UserState$studies <<- as.vector(state$values$studies)
-    UserState$studies_selected <- as.vector(mgrep(UserState$studies, StudiesDB$ImmPort.Study.ID))
+    UserState$studies_selected <- as.vector(mgrep(UserState$studies, StudiesDB$ImmPort_Study_ID))
     # UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort.Study.ID), ]
     initSamples()
     
 
     samples <- strsplit(state$values$samples,",")
     UserState$samples = as.vector(samples)
-    UserState$samples_selected = as.vector(unlist(mgrep(samples, UserState$DB$Biosample.ID)))
+    UserState$samples_selected = as.vector(unlist(mgrep(samples, UserState$DB$Repository_Accession)))
 
   })
   
@@ -468,18 +488,41 @@ function(input, output, session) {
   })
 
    observeEvent(input$study_cell_clicked, { 
-     UserState$studies = StudiesDB[input$study_rows_selected,  "ImmPort.Study.ID"]
-     UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort.Study.ID), ]
+     UserState$studies = StudiesDB[input$study_rows_selected,  "ImmPort_Study_ID"]
+     UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort_Study_ID), ]
      initSamples()
      
      session$doBookmark()
    })
 
    observeEvent(input$DB_cell_clicked, { 
-     UserState$samples <<- UserState$DB[input$DB_rows_selected, "Biosample.ID"]
+     UserState$samples <<- UserState$DB[input$DB_rows_selected, "Repository_Accession"]
      session$doBookmark()
    })
 
-  
+  observeEvent(input$clearSamples, {
+	UserState$samples_selected <- 0
+        #UserState$samples <- vector(mode = "character", length = 0)
+	UserState$samples <- ""
+	output$DB <- DT::renderDataTable( {
+		db = UserState$DB[ , displayed_columns ]
+		db = transformURL(db)
+		DT::datatable(db, selection = list(selected = as.list(UserState$samples_selected)), escape=FALSE  )
+	})
+	session$doBookmark()
+  })
+
+  observeEvent(input$clearStudies, {
+	UserState$studies_selected <- 0
+	#UserState$studies <- vector(mode = "character", length = 0)
+	UserState$studies <- ""
+	output$study <- DT::renderDataTable( { 
+		DT::datatable(StudiesDB, selection = list(selected = as.list(UserState$studies_selected)), rownames=FALSE)
+	})
+	#UserState$studies = StudiesDB[input$study_rows_selected,  "ImmPort_Study_ID"]
+	#UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort_Study_ID), ]
+	#initSamples()
+	session$doBookmark()
+  })  
 
 } # end of server.R singletonfunction

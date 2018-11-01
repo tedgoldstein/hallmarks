@@ -1,14 +1,21 @@
 jsCode = '$(".StudyDiv").prependTo(".dt-buttons")'
 
 function(request) {
-
+  shinyjs::useShinyjs()
   SelectStudy <- function()
-        DT::dataTableOutput('study')
+	div(id = "studyform",
+	    style="width:100%",
+  	    tags$a(name="Select_Studies", h3("Select Studies")),
+	    actionButton("clearStudies", "Clear All Selected"),
+            DT::dataTableOutput('study')
+        )
 
   SelectSample <- function()
-        div(style="width:100%",
-            tags$a(name="Select_Sample", h3("Select Sample")),
+        div(id = "sampleform",
+	    style="width:100%",
+            tags$a(name="Select_Samples", h3("Select Samples")),
             downloadButton("downloadSamples", "Download Samples"),
+            actionButton("clearSamples", "Clear All Selected"),
             DT::dataTableOutput('DB')
         )
 

@@ -28,7 +28,7 @@ rank.normalize <- function(x, FUN=qnorm, ties.method = "average", na.action) {
 
 # LOAD UP THE DATASETS
 if (!exists("need")) {
-    need = readLines("../GeneLists/genes.all")
+    need = readLines("../GeneLists/geneIDs.all")
 }
 
 

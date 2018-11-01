@@ -1,6 +1,6 @@
 library(data.table)
 
-need = readLines("../../GeneLists/genes.all")
+need = readLines("../../GeneLists/geneIDs.all")
 
 rescale = function(b) {
   maxb = max(b)
@@ -45,9 +45,9 @@ read = function(nm) {
 
   
 if (!exists("TCGA.RSEM"))
-  print(system.time(TCGA.RSEM <-- read("/data/OMF/RSEM/latest/TCGA.RSEM")))
+  print(system.time(TCGA.RSEM <-- read("TCGA.RSEM")))
 if (!exists("GTEX.RSEM"))
-  print(system.time(GTEX.RSEM <-- read("/data/OMF/RSEM/latest/GTEX.RSEM")))
+  print(system.time(GTEX.RSEM <-- read("GTEX.RSEM")))
 
 
 # genes = intersect( rownames(GTEX.RSEM), rownames(TCGA.RSEM))

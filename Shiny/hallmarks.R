@@ -3,10 +3,10 @@
 
 
 library(urltools)
-
+#library(dplyr)
 library(shiny)
 library(shinyjqui)
-
+#library(shinyjs)
 # Don't use (jsonlite) 
 library(RJSONIO)
 
@@ -114,17 +114,19 @@ for (sig in Signatures$signatures) {
     TCGA[cancer, sig$hallmark] = round(mean( sig$reference$score[sig$reference$labels == 1] ))
     TCGA <<- fix(TCGA, cancer, "TCGA")
 }
+colnames(TCGA) <- gsub("-", "_", colnames(TCGA))
+colnames(TCGA) <- gsub("\\.", "_", colnames(TCGA))
 
 # colnames(TCGA) <- unlist(lapply(colnames(TCGA), function(x) gsub("Tumor.", "Tumor.", gsub(" ", "_", x))))
 
 
 S = NULL
 T = NULL
-
 aggregateScores = function() {
     primary = function(x) {
-        df = read.table(paste0("../Scores/",x), sep="\t", header=1, as.is=TRUE)
-
+	cType = strsplit(x, "\\.")[[1]][2]
+        df = read.table(paste0("../Scores/data_files/",x), sep="\t", header=1, as.is=TRUE)
+	df$Cancer_Model <- cType
         if (is.null(S))
             S <<- df
         else {
@@ -132,8 +134,8 @@ aggregateScores = function() {
         }
     }
     annotate = function(x) {
-        df = read.table(paste0("../Scores/",x), sep="\t", header=1, as.is=TRUE, fill=TRUE)
-        df =  merge(S, df, by="Biosample.ID")
+        df = read.table(paste0("../Scores/data_files/",x), sep="\t", header=1, as.is=TRUE, fill=TRUE)
+        df = merge(S, df, by = "Repository.Accession", all.S = TRUE)
 
         if (is.null(T))
             T <<- df
@@ -141,41 +143,37 @@ aggregateScores = function() {
             T <<- rbind(T, df)
     }
 
-    lapply(list.files(path = "../Scores", pattern = "*.metadata" ), primary)
-    lapply(list.files(path = "../Scores", pattern = "*.score" ), annotate)
+    lapply(list.files(path = "../Scores/data_files", pattern = "*.score" ), primary)
+    lapply(list.files(path = "../Scores/data_files", pattern = "*.metadata" ), annotate)
     df = as.data.frame(T)
     colnames(df) <- gsub("-", "_", colnames(df))
+    colnames(df) <- gsub("\\.", "_", colnames(df))
     return(df)
 }
 
+#read.table.hot = function(name)  {
+#    table = read.table(name, header=TRUE, as.is=TRUE, fill=TRUE, sep="\t")
+#    row.names(table) = table$Biosample_ID
 
-
-
-
-read.table.hot = function(name)  {
-    table = read.table(name, header=TRUE, as.is=TRUE, fill=TRUE, sep="\t")
-    row.names(table) = table$Biosample.ID
-
-    colOrder = colnames(table)
-    table = rbind(TCGA, table)
-    table = table[, colOrder];
-}
+#    colOrder = colnames(table)
+#    table = rbind(TCGA, table)
+#    table = table[, colOrder];
+#}
 
 # DB <- reactiveFileReader(1000, NULL, 'DB.txt', read.table.hot)
 DB = aggregateScores
 
 SamplesDB = aggregateScores()
-rownames(SamplesDB)  = SamplesDB$Biosample.ID
-StudiesDB = SamplesDB[,c("PubMed", "Cancer.Type", "Study.Title", "ImmPort.Study.ID", "PI")]
-StudiesDB$Cancer.Type = sapply(StudiesDB$Cancer.Type, simpleCap)
+#rownames(SamplesDB)  = SamplesDB$Repository_Accession
+rownames(SamplesDB) = paste(SamplesDB$Repository_Accession, SamplesDB$Cancer_Model, sep=".")
+StudiesDB = SamplesDB[,c("PubMed", "Cancer_Type", "Study_Title", "ImmPort_Study_ID")]
+StudiesDB$Cancer_Type = sapply(StudiesDB$Cancer_Type, simpleCap)
 StudiesDB = unique(StudiesDB)
-rownames(StudiesDB) = StudiesDB$ImmPort.Study.ID
+rownames(StudiesDB) = StudiesDB$ImmPort_Study_ID
 # rownames(StudiesDB) = do.call(paste, StudiesDB)
 
 
 Cancers = unique(unlist(lapply(Signatures$signatures,function(s) s$cancer)))
-
-# Mus_Homologues = read.table("Mus_Homologues.txt", header=T, row.names=1, sep="\t")
 
 enableBookmarking(store = "url")
 
