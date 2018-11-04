@@ -37,7 +37,7 @@ hallmark_columns = c(
 
 legend_columns_default = c(
      "Hallmark",
-     "Cancer_Type",
+     "Cancer_Model",
      "Repository_Accession"
      #"Biosample_ID",
      #"Type",
@@ -67,6 +67,7 @@ displayed_columns  = c(
     "Experiment_ID",
     "Cohort",
     "Repository_Accession",
+    #"Sample_Set",
     #"Biosample_Name",
     "Strain",
     "Cancer_Type",
@@ -97,9 +98,6 @@ rank.normalize <- function(x, FUN=qnorm, ties.method = "average", na.action) {
     ret = FUN(rank(x, ties.method = ties.method)/(length(x)+1))
     ret
 }
-
-
-
 
 computeSignatureScore = function(X, cancer) {
     signaturesForTissue <- Filter(function(ss) ss$cancer == cancer, Signatures$signatures)
@@ -181,11 +179,13 @@ computeSignatureScore = function(X, cancer) {
         Cell_Type = rep( "none", n),
         Cell_Line = rep( "none", n),
         Treatment = rep( "none", n),
-	Strain = rep( "none", n), stringsAsFactors=FALSE
+	Strain = rep( "none", n),
+	Sample_Set = paste(colnames(X), rep( simpleCap(signature$cancer), n), sep="."),
+	stringsAsFactors=FALSE
     );
 
     scores = cbind(scores, df)
-    scores = scores[,c("Repository_Accession", "Hallmark", "Evading_growth_suppressors", "Evading_immune_destruction", "Genome_instability", "Replicative_immortality", "Reprogramming_energy_metabolism", "Resisting_cell_death", "Sustained_angiogenesis", "Sustaining_proliferative_signaling", "Tissue_invasion_and_metastasis", "Tumor_promoting_inflammation", "Cancer_Model", "ImmPort_Study_ID", "PubMed", "Study_Title", "PI", "Biosample_ID", "Experiment_ID", "Cohort", "Type", "Subtype", "Biosample_Name", "Biosample_Description", "Species", "Strain", "Cancer_Type", "Tissue", "Cell_Type", "Cell_Line","Treatment")]
+    scores = scores[,c("Repository_Accession", "Hallmark", "Evading_growth_suppressors", "Evading_immune_destruction", "Genome_instability", "Replicative_immortality", "Reprogramming_energy_metabolism", "Resisting_cell_death", "Sustained_angiogenesis", "Sustaining_proliferative_signaling", "Tissue_invasion_and_metastasis", "Tumor_promoting_inflammation", "Cancer_Model", "ImmPort_Study_ID", "PubMed", "Study_Title", "PI", "Biosample_ID", "Experiment_ID", "Cohort", "Type", "Subtype", "Biosample_Name", "Biosample_Description", "Species", "Strain", "Cancer_Type", "Tissue", "Cell_Type", "Cell_Line", "Treatment", "Sample_Set")]
 
     return (scores)
 }
@@ -204,18 +204,20 @@ function(input, output, session) {
   UserState <- reactiveValues();
   
   UserState$studies_selected <- 1
-  UserState$studies <- StudiesDB[1, "ImmPort_Study_ID"]
-  db2 =SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort_Study_ID), ] 
+  UserState$studies <- StudiesDB[7, "ImmPort_Study_ID"]
+  
+  db2 = SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort_Study_ID), ]
   UserState$DB = db2
-  sel = c(which.min(db2$Hallmark), which.max(db2$Hallmark))
+  sel = c(1:10)
+  #sel = c(which.min(db2$Hallmark), which.max(db2$Hallmark))
   UserState$samples_selected = sel
-  UserState$samples = rownames(db2)[sel]
+  UserState$samples = db2$Sample_Set[sel]
  
   initSamples = function() {
-    db = SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort_Study_ID), ]
-    UserState$DB = db
+    db3 = SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort_Study_ID), ]
+    UserState$DB = db3
     UserState$samples_selected = 0
-    UserState$samples = rownames(db)[0]
+    UserState$samples = db3$Sample_Set[0]
   }
   #initSamples()
 
@@ -327,7 +329,7 @@ function(input, output, session) {
       if (nrow(ldb) > 0)
           # legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
           legend =  apply(ldb, 1, function(x) {
-              paste(x["Cancer_Type"], x["Repository_Accession"], x[input$SelectLgColumn])
+              paste(x["Repository_Accession"], x["Cancer_Model"], x[input$SelectLgColumn])
           })
       else
           legend = list("none selected")
@@ -344,8 +346,6 @@ function(input, output, session) {
       tags$ul(style="list-style: none;", lapply(1:length(legend), wrapDiv))
     }
   })
-
-
 
   plotRadarChart = function(zodiacLayout) {
     data = UserState$DB[ unlist(UserState$samples), hallmark_columns ]
@@ -442,9 +442,9 @@ function(input, output, session) {
     output$Uploaded <- DT::renderDataTable( { DT::datatable(UserState$uploaded, options = list( pageLength = 10), colnames = c('geneID' = 1)) })
   })
 
-  StudiesDB <- StudiesDB[order(StudiesDB$Cancer_Type),]
+  StudiesDB2 <- StudiesDB[order(StudiesDB$Cancer_Type),]
   output$study <- DT::renderDataTable( { 
-        DT::datatable(StudiesDB, selection = list(selected = as.list(UserState$studies_selected)))
+        DT::datatable(StudiesDB2, selection = list(selected = as.list(UserState$studies_selected)))
     })
 
     output$Scored <- DT::renderDataTable( { 
@@ -454,15 +454,14 @@ function(input, output, session) {
         }
     })
 
-
    observe({
         db = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort_Study_ID), ]
         if (! is.null(UserState$uploadedScored)) {
             user = UserState$uploadedScored
             db = rbind(user, db)
             #rownames(db) = db$Repository_Accession
-	    rownames(db) = paste(db$Repository_Accession, db$Cancer_Model, sep=".")
         }
+	rownames(db) = paste(db$Repository_Accession, db$Cancer_Model, sep=".")
         UserState$DB = db
    })
 
@@ -477,15 +476,13 @@ function(input, output, session) {
    )
 
   onRestored(function(state) {
-    UserState$studies <<- as.vector(state$values$studies)
+    UserState$studies <- as.vector(state$values$studies)
     UserState$studies_selected <- as.vector(mgrep(UserState$studies, StudiesDB$ImmPort_Study_ID))
-    # UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort.Study.ID), ]
     initSamples()
-    
 
     samples <- strsplit(state$values$samples,",")
     UserState$samples = as.vector(samples)
-    UserState$samples_selected = as.vector(unlist(mgrep(samples, UserState$DB$Repository_Accession)))
+    UserState$samples_selected = as.vector(unlist(mgrep(samples, UserState$DB$Sample_Set)))
 
   })
   
@@ -502,20 +499,19 @@ function(input, output, session) {
 
    observeEvent(input$study_cell_clicked, { 
      UserState$studies = StudiesDB[input$study_rows_selected,  "ImmPort_Study_ID"]
-     UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort_Study_ID), ]
      initSamples()
      
      session$doBookmark()
-   })
+  })
 
    observeEvent(input$DB_cell_clicked, { 
-     UserState$samples <<- UserState$DB[input$DB_rows_selected, "Repository_Accession"]
+     UserState$samples <- UserState$DB[input$DB_rows_selected, "Sample_Set"]
      session$doBookmark()
    })
 
   observeEvent(input$clearSamples, {
 	UserState$samples_selected <- 0
-        UserState$samples <- vector(mode = "character", length = 0)
+	UserState$samples <- UserState$DB[0, "Sample_Set"]
 	output$DB <- DT::renderDataTable( {
 		db = UserState$DB[ , displayed_columns ]
 		db = transformURL(db)
@@ -526,14 +522,14 @@ function(input, output, session) {
 
   observeEvent(input$clearStudies, {
 	UserState$studies_selected <- 0
-	#UserState$studies <- vector(mode = "character", length = 0)
-	StudiesDB <- StudiesDB[order(StudiesDB$Cancer_Type),]
+	UserState$studies = StudiesDB[0,  "ImmPort_Study_ID"]
+	initSamples()
+
+	StudiesDB3 <- StudiesDB[order(StudiesDB$Cancer_Type),]
 	output$study <- DT::renderDataTable({
-		DT::datatable(StudiesDB, selection = list(selected = as.list(UserState$studies_selected)))
+		DT::datatable(StudiesDB3, selection = list(selected = as.list(UserState$studies_selected)))
 	})
-	#UserState$studies = StudiesDB[input$study_rows_selected,  "ImmPort_Study_ID"]
-	#UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort_Study_ID), ]
-	#initSamples()
+
 	session$doBookmark()
   })  
 

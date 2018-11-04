@@ -83,42 +83,6 @@ simpleCap <- function(x) {
 Signatures <- RJSONIO::fromJSON("../Signatures/signatures")
 #Signatures <- RJSONIO::fromJSON("signatures")
 
-if(FALSE) {
-Tissues <- names(Signatures$index)
-
-TCGA = data.frame();
-
-
-fix <- function(df, r, PI) {
-    df[r, "Type"] = simpleCap(sig$cancer)
-    df[r, "Subtype"] = simpleCap(sig$tissue)
-    df[r, "Species"] = "Homo Sapien"
-    df[r, "Study.Title"] <- "Mean average of samples"
-
-    df[r, "PI"] <- PI
-    df[r, "ImmPort.Study.ID"] <- "REF"
-    df[r, "PubMed"] <- "none"
-    df[r, "Experiment.ID"] <- "none"
-    df[r, "Cohort"] <- "none"
-    df[r, "Biosample.ID"] <- r
-    df[r, "Repository.Accession"] <- "none"
-    df[r, "Biosample.Name"] <- "none"
-    df[r, "Biosample.Description"] <- "none"
-    df[r, "Strain"] <- "none"
-    return(df)
-}
-
-for (sig in Signatures$signatures) {
-    cancer = simpleCap(sig$cancer)
-    TCGA[cancer, sig$hallmark] = round(mean( sig$reference$score[sig$reference$labels == 1] ))
-    TCGA <<- fix(TCGA, cancer, "TCGA")
-}
-colnames(TCGA) <- gsub("-", "_", colnames(TCGA))
-colnames(TCGA) <- gsub("\\.", "_", colnames(TCGA))
-
-# colnames(TCGA) <- unlist(lapply(colnames(TCGA), function(x) gsub("Tumor.", "Tumor.", gsub(" ", "_", x))))
-}
-
 S = NULL
 T = NULL
 aggregateScores = function() {
@@ -166,6 +130,7 @@ DB = aggregateScores
 SamplesDB = aggregateScores()
 #rownames(SamplesDB)  = SamplesDB$Repository_Accession
 rownames(SamplesDB) = paste(SamplesDB$Repository_Accession, SamplesDB$Cancer_Model, sep=".")
+SamplesDB$Sample_Set = paste(SamplesDB$Repository_Accession, SamplesDB$Cancer_Model, sep=".")
 StudiesDB = SamplesDB[,c("PubMed", "Cancer_Type", "Study_Title", "ImmPort_Study_ID")]
 StudiesDB$Cancer_Type = sapply(StudiesDB$Cancer_Type, simpleCap)
 StudiesDB = unique(StudiesDB)
