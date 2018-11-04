@@ -35,19 +35,22 @@ hallmark_columns = c(
     "Replicative_immortality",
     "Evading_immune_destruction")
 
-legend_columns = c(
+legend_columns_default = c(
      "Hallmark",
-     "Repository_Accession",
-     "Biosample_ID",
+     "Cancer_Type",
+     "Repository_Accession"
+     #"Biosample_ID",
      #"Type",
      #"Subtype", 
      #"Species", 
      #"Strain",
      #"Cohort", 
      #"Biosample_Name", 
-     #"Biosample_Description",
-     "Cancer_Model"
+     #"Biosample_Description"
 )
+
+#legend_columns = c(legend_columns_default, input$SelectLegendColumn)
+
 # ImmPort.Study.ID	PubMed	Study.Title	PI	Biosample.ID	Experiment.ID	Cohort	Repository.Accession	Type	Subtype	Biosample.Name	Biosample.Description	Species	Strain
 
 displayed_columns  = c(
@@ -62,12 +65,16 @@ displayed_columns  = c(
     #"ImmPort_Study_ID",
     "PubMed",
     "Experiment_ID",
-    #"Cohort",
+    "Cohort",
     "Repository_Accession",
     #"Biosample_Name",
-    #"Strain",
+    "Strain",
     "Cancer_Type",
     "Cancer_Model",
+    "Tissue",
+    "Cell_Type",
+    "Cell_Line",
+    "Treatment",
     "Evading_growth_suppressors",
     "Evading_immune_destruction",
     "Genome_instability",
@@ -170,11 +177,15 @@ computeSignatureScore = function(X, cancer) {
 	Cohort = rep( "none", n),
 	Biosample_Name = rep( "none", n),
 	Biosample_Description = rep( "none", n),
+	Tissue = rep( "none", n),
+        Cell_Type = rep( "none", n),
+        Cell_Line = rep( "none", n),
+        Treatment = rep( "none", n),
 	Strain = rep( "none", n), stringsAsFactors=FALSE
     );
 
     scores = cbind(scores, df)
-    scores = scores[,c("Repository_Accession", "Hallmark", "Evading_growth_suppressors", "Evading_immune_destruction", "Genome_instability", "Replicative_immortality", "Reprogramming_energy_metabolism", "Resisting_cell_death", "Sustained_angiogenesis", "Sustaining_proliferative_signaling", "Tissue_invasion_and_metastasis", "Tumor_promoting_inflammation", "Cancer_Model", "ImmPort_Study_ID", "PubMed", "Study_Title", "PI", "Biosample_ID", "Experiment_ID", "Cohort", "Type", "Subtype", "Biosample_Name", "Biosample_Description", "Species", "Strain", "Cancer_Type")]
+    scores = scores[,c("Repository_Accession", "Hallmark", "Evading_growth_suppressors", "Evading_immune_destruction", "Genome_instability", "Replicative_immortality", "Reprogramming_energy_metabolism", "Resisting_cell_death", "Sustained_angiogenesis", "Sustaining_proliferative_signaling", "Tissue_invasion_and_metastasis", "Tumor_promoting_inflammation", "Cancer_Model", "ImmPort_Study_ID", "PubMed", "Study_Title", "PI", "Biosample_ID", "Experiment_ID", "Cohort", "Type", "Subtype", "Biosample_Name", "Biosample_Description", "Species", "Strain", "Cancer_Type", "Tissue", "Cell_Type", "Cell_Line","Treatment")]
 
     return (scores)
 }
@@ -309,13 +320,14 @@ function(input, output, session) {
   output$Legend = renderUI( {
     db = UserState$DB[unlist(UserState$samples),]
     if (!is.null(db)) {
+      legend_columns = c(legend_columns_default, input$SelectLgColumn)
       ldb = db[, legend_columns]
       ldb = ldb[order(ldb$Repository_Accession),]
   
       if (nrow(ldb) > 0)
           # legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
           legend =  apply(ldb, 1, function(x) {
-              paste(x["Repository_Accession"], x["Biosample_ID"], x["Cohort"] ,x["Cancer_Model"])
+              paste(x["Cancer_Type"], x["Repository_Accession"], x[input$SelectLgColumn])
           })
       else
           legend = list("none selected")
@@ -407,11 +419,11 @@ function(input, output, session) {
     d <- subset(d, GeneID != "NA")
     d <- subset(d, select = -c(gene_id))
 
-    if ( any(d > 1000) ) {
+    if ( any(d[2:nrow(d),2:ncol(d)] > 1000) ) {
       #it appears to be raw counts
         d = d %>% group_by(GeneID) %>% summarise_all(funs(sum))
         e = "Aggregating duplicate rows by summing counts"
-    } else if ( all(d >= 0 & d <= 20) ) {
+    } else if ( all(d[2:nrow(d),2:ncol(d)] >= 0 & d[2:nrow(d),2:ncol(d)] <= 20) ) {
       #it appears to be normalized log in some way
         d = d %>% group_by(GeneID) %>% summarise_all(funs(geometric_mean))
         e = "Aggregating duplicate rows by geometric mean averaging"
@@ -427,18 +439,18 @@ function(input, output, session) {
     d[,1] <- NULL
 
     UserState$uploaded = d
-    output$Uploaded <- DT::renderDataTable( { DT::datatable(UserState$uploaded, options = list( pageLength = 5)) })
+    output$Uploaded <- DT::renderDataTable( { DT::datatable(UserState$uploaded, options = list( pageLength = 10), colnames = c('geneID' = 1)) })
   })
 
-
+  StudiesDB <- StudiesDB[order(StudiesDB$Cancer_Type),]
   output$study <- DT::renderDataTable( { 
-        DT::datatable(StudiesDB, selection = list(selected = as.list(UserState$studies_selected)), rownames=FALSE)
+        DT::datatable(StudiesDB, selection = list(selected = as.list(UserState$studies_selected)))
     })
 
     output$Scored <- DT::renderDataTable( { 
         if (! is.null(UserState$uploaded)) {
             UserState$uploadedScored = computeSignatureScore(UserState$uploaded, input$Cancer)
-            DT::datatable(UserState$uploadedScored)
+            DT::datatable(UserState$uploadedScored, rownames=FALSE)
         }
     })
 
@@ -448,7 +460,8 @@ function(input, output, session) {
         if (! is.null(UserState$uploadedScored)) {
             user = UserState$uploadedScored
             db = rbind(user, db)
-            rownames(db) = db$Repository_Accession
+            #rownames(db) = db$Repository_Accession
+	    rownames(db) = paste(db$Repository_Accession, db$Cancer_Model, sep=".")
         }
         UserState$DB = db
    })
@@ -502,12 +515,11 @@ function(input, output, session) {
 
   observeEvent(input$clearSamples, {
 	UserState$samples_selected <- 0
-        #UserState$samples <- vector(mode = "character", length = 0)
-	UserState$samples <- ""
+        UserState$samples <- vector(mode = "character", length = 0)
 	output$DB <- DT::renderDataTable( {
 		db = UserState$DB[ , displayed_columns ]
 		db = transformURL(db)
-		DT::datatable(db, selection = list(selected = as.list(UserState$samples_selected)), escape=FALSE  )
+		DT::datatable(db, selection = list(selected = as.list(UserState$samples_selected)), escape=FALSE)
 	})
 	session$doBookmark()
   })
@@ -515,9 +527,9 @@ function(input, output, session) {
   observeEvent(input$clearStudies, {
 	UserState$studies_selected <- 0
 	#UserState$studies <- vector(mode = "character", length = 0)
-	UserState$studies <- ""
-	output$study <- DT::renderDataTable( { 
-		DT::datatable(StudiesDB, selection = list(selected = as.list(UserState$studies_selected)), rownames=FALSE)
+	StudiesDB <- StudiesDB[order(StudiesDB$Cancer_Type),]
+	output$study <- DT::renderDataTable({
+		DT::datatable(StudiesDB, selection = list(selected = as.list(UserState$studies_selected)))
 	})
 	#UserState$studies = StudiesDB[input$study_rows_selected,  "ImmPort_Study_ID"]
 	#UserState$DB = SamplesDB[ mgrep(UserState$studies, SamplesDB$ImmPort_Study_ID), ]

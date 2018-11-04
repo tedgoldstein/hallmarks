@@ -26,7 +26,10 @@ function(request) {
 
       sidebarPanel(width=5,
         h2("Legend"),
-        uiOutput("Legend")
+        #uiOutput("Legend"),
+	selectInput("SelectLgColumn", "Column Select:", c("Biosample_ID" = "Biosample_ID", "Cohort" = "Cohort", "Strain" = "Strain", "Subtype" = "Subtype", "Biosample_Name" = "Biosample_Name", "Tissue" = "Tissue", "Cell_Type" = "Cell_Type", "Cell_Line" = "Cell_Line", "Treatment" = "Treatment", "Biosample_Description" = "Biosample_Description"), width = '50%'),
+	br(),
+	uiOutput("Legend")
       )
      ) 
 
@@ -46,6 +49,7 @@ function(request) {
           p('Sample file:',
              a(href = 'min.txt', 'min.txt')
           ),
+	  p("(The first column could be Human/Mouse Gene Symbols or Entrez ID)", style = "font-size:13px"),
           DT::dataTableOutput('Uploaded')
       ),
       wellPanel(

@@ -1,7 +1,4 @@
 ############################################################################################
- 
-
-
 library(urltools)
 #library(dplyr)
 library(shiny)
@@ -85,6 +82,8 @@ simpleCap <- function(x) {
 
 Signatures <- RJSONIO::fromJSON("../Signatures/signatures")
 #Signatures <- RJSONIO::fromJSON("signatures")
+
+if(FALSE) {
 Tissues <- names(Signatures$index)
 
 TCGA = data.frame();
@@ -118,7 +117,7 @@ colnames(TCGA) <- gsub("-", "_", colnames(TCGA))
 colnames(TCGA) <- gsub("\\.", "_", colnames(TCGA))
 
 # colnames(TCGA) <- unlist(lapply(colnames(TCGA), function(x) gsub("Tumor.", "Tumor.", gsub(" ", "_", x))))
-
+}
 
 S = NULL
 T = NULL
@@ -148,6 +147,7 @@ aggregateScores = function() {
     df = as.data.frame(T)
     colnames(df) <- gsub("-", "_", colnames(df))
     colnames(df) <- gsub("\\.", "_", colnames(df))
+    colnames(df) <- gsub(" ", "_", colnames(df))
     return(df)
 }
 
@@ -171,7 +171,6 @@ StudiesDB$Cancer_Type = sapply(StudiesDB$Cancer_Type, simpleCap)
 StudiesDB = unique(StudiesDB)
 rownames(StudiesDB) = StudiesDB$ImmPort_Study_ID
 # rownames(StudiesDB) = do.call(paste, StudiesDB)
-
 
 Cancers = unique(unlist(lapply(Signatures$signatures,function(s) s$cancer)))
 
