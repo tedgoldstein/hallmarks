@@ -26,7 +26,10 @@ function(request) {
 
       sidebarPanel(width=5,
         h2("Legend"),
-	selectInput("SelectLgColumn", "Column Select:", c("Biosample_ID" = "Biosample_ID", "Cohort" = "Cohort", "Strain" = "Strain", "Subtype" = "Subtype", "Biosample_Name" = "Biosample_Name", "Tissue" = "Tissue", "Cell_Type" = "Cell_Type", "Cell_Line" = "Cell_Line", "Treatment" = "Treatment", "Biosample_Description" = "Biosample_Description"), width = '50%'),
+	checkboxGroupInput("SelectLgColumn", "Column Select:", 
+	choices=list("Repository_Accession","Cancer_Model","Biosample_ID","Biosample_Name","Cohort","Strain","Subtype","Tissue","Cell_Type","Cell_Line","Treatment","Biosample_Description"),
+	selected=list("Repository_Accession","Cancer_Model","Biosample_ID"),
+	width = '100%',inline = TRUE),
 	br(),
 	uiOutput("Legend")
       )

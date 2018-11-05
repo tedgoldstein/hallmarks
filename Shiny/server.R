@@ -1,6 +1,7 @@
 library(dplyr)
 library(pracma)
 library(png)
+
 options(shiny.maxRequestSize=50*1024^2) 
 
 urlMap = list(
@@ -34,24 +35,6 @@ hallmark_columns = c(
     "Tumor_promoting_inflammation",
     "Replicative_immortality",
     "Evading_immune_destruction")
-
-legend_columns_default = c(
-     "Hallmark",
-     "Cancer_Model",
-     "Repository_Accession"
-     #"Biosample_ID",
-     #"Type",
-     #"Subtype", 
-     #"Species", 
-     #"Strain",
-     #"Cohort", 
-     #"Biosample_Name", 
-     #"Biosample_Description"
-)
-
-#legend_columns = c(legend_columns_default, input$SelectLegendColumn)
-
-# ImmPort.Study.ID	PubMed	Study.Title	PI	Biosample.ID	Experiment.ID	Cohort	Repository.Accession	Type	Subtype	Biosample.Name	Biosample.Description	Species	Strain
 
 displayed_columns  = c(
     "Hallmark",
@@ -204,12 +187,11 @@ function(input, output, session) {
   UserState <- reactiveValues();
   
   UserState$studies_selected <- 1
-  UserState$studies <- StudiesDB[7, "ImmPort_Study_ID"]
+  UserState$studies <- StudiesDB[1, "ImmPort_Study_ID"]
   
   db2 = SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort_Study_ID), ]
   UserState$DB = db2
-  sel = c(1:10)
-  #sel = c(which.min(db2$Hallmark), which.max(db2$Hallmark))
+  sel = c(which.min(db2$Hallmark), which.max(db2$Hallmark))
   UserState$samples_selected = sel
   UserState$samples = db2$Sample_Set[sel]
  
@@ -249,6 +231,10 @@ function(input, output, session) {
         "study_search",
         "study_state",
         "Uploaded_cell_clicked",
+	"Uploaded_rows_current",
+	"Uploaded_rows_selected",
+	"Uploaded_search",
+	"Uploaded_state",
         "Uploaded_rows_all"))
 
    
@@ -322,15 +308,12 @@ function(input, output, session) {
   output$Legend = renderUI( {
     db = UserState$DB[unlist(UserState$samples),]
     if (!is.null(db)) {
-      legend_columns = c(legend_columns_default, input$SelectLgColumn)
+      legend_columns = c("Hallmark", input$SelectLgColumn)
       ldb = db[, legend_columns]
-      ldb = ldb[order(ldb$Repository_Accession),]
+      ldb2 = db[, input$SelectLgColumn]
   
-      if (nrow(ldb) > 0)
-          # legend =  apply(ldb, 1, function(x) paste(x, collapse=" "))
-          legend =  apply(ldb, 1, function(x) {
-              paste(x["Repository_Accession"], x["Cancer_Model"], x[input$SelectLgColumn])
-          })
+      if (nrow(ldb2) > 0)
+	  legend = as.list(apply(ldb2 , 1 , paste , collapse = "\t" ))
       else
           legend = list("none selected")
       
@@ -442,9 +425,8 @@ function(input, output, session) {
     output$Uploaded <- DT::renderDataTable( { DT::datatable(UserState$uploaded, options = list( pageLength = 10), colnames = c('geneID' = 1)) })
   })
 
-  StudiesDB2 <- StudiesDB[order(StudiesDB$Cancer_Type),]
   output$study <- DT::renderDataTable( { 
-        DT::datatable(StudiesDB2, selection = list(selected = as.list(UserState$studies_selected)))
+        DT::datatable(StudiesDB, selection = list(selected = as.list(UserState$studies_selected)))
     })
 
     output$Scored <- DT::renderDataTable( { 
@@ -476,13 +458,15 @@ function(input, output, session) {
    )
 
   onRestored(function(state) {
-    UserState$studies <- as.vector(state$values$studies)
+    UserState$studies <<- as.vector(state$values$studies)
     UserState$studies_selected <- as.vector(mgrep(UserState$studies, StudiesDB$ImmPort_Study_ID))
-    initSamples()
+
+    db4 = SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort_Study_ID), ]
+    UserState$DB = db4
 
     samples <- strsplit(state$values$samples,",")
     UserState$samples = as.vector(samples)
-    UserState$samples_selected = as.vector(unlist(mgrep(samples, UserState$DB$Sample_Set)))
+    UserState$samples_selected = as.vector(unlist(mgrep(samples, db4$Sample_Set)))
 
   })
   
@@ -505,7 +489,7 @@ function(input, output, session) {
   })
 
    observeEvent(input$DB_cell_clicked, { 
-     UserState$samples <- UserState$DB[input$DB_rows_selected, "Sample_Set"]
+     UserState$samples <<- UserState$DB[input$DB_rows_selected, "Sample_Set"]
      session$doBookmark()
    })
 
@@ -525,9 +509,8 @@ function(input, output, session) {
 	UserState$studies = StudiesDB[0,  "ImmPort_Study_ID"]
 	initSamples()
 
-	StudiesDB3 <- StudiesDB[order(StudiesDB$Cancer_Type),]
 	output$study <- DT::renderDataTable({
-		DT::datatable(StudiesDB3, selection = list(selected = as.list(UserState$studies_selected)))
+		DT::datatable(StudiesDB, selection = list(selected = as.list(UserState$studies_selected)))
 	})
 
 	session$doBookmark()
