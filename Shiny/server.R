@@ -7,8 +7,8 @@ options(shiny.maxRequestSize=50*1024^2)
 urlMap = list(
     "PubMed"= "https://www.ncbi.nlm.nih.gov/pubmed/",
     "ImmPort.Study.ID"= "http://www.immport.org/immport-open/public/study/study/displayStudyDetail/",
-    "Strain"= "http://www.findmice.org/summary?query=",
-    "Type"= "https://portal.gdc.cancer.gov/projects/",
+    #"Strain"= "http://www.findmice.org/summary?query=",
+    #"Type"= "https://portal.gdc.cancer.gov/projects/",
     "Experiment_ID"= "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
     "Biosample_ID"= "https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?run=",
     "Repository_Accession"= "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
@@ -353,7 +353,7 @@ function(input, output, session) {
           no_vlabels=FALSE
       }
   
-      if (nrow(data) > 2)
+      if (nrow(data) > 3)
         radarchart( data  , axistype=1 ,  no_vlabels=no_vlabels,
             image=image, rotate=rotate, scale=scale, 
             caxislabels=c(0,250,500, 750,1000),
@@ -458,16 +458,17 @@ function(input, output, session) {
    )
 
   onRestored(function(state) {
-    UserState$studies <<- as.vector(state$values$studies)
-    UserState$studies_selected <- as.vector(mgrep(UserState$studies, StudiesDB$ImmPort_Study_ID))
+    UserState$studies = as.vector(state$values$studies)
+    UserState$studies_selected = as.vector(mgrep(UserState$studies, StudiesDB$ImmPort_Study_ID))
 
-    db4 = SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort_Study_ID), ]
+    db4 <- SamplesDB[ mgrep(isolate(UserState$studies), SamplesDB$ImmPort_Study_ID), ]
     UserState$DB = db4
 
     samples <- strsplit(state$values$samples,",")
     UserState$samples = as.vector(samples)
     UserState$samples_selected = as.vector(unlist(mgrep(samples, db4$Sample_Set)))
 
+    session$doBookmark()
   })
   
   onBookmarked(function(url) {
@@ -477,25 +478,25 @@ function(input, output, session) {
 
   onBookmark(function(state) {
     # state$values$savedTime <- Sys.time()
-    state$values$studies <- UserState$studies
-    state$values$samples <- paste(UserState$samples, collapse=",")
+    state$values$studies = UserState$studies
+    state$values$samples = paste(UserState$samples, collapse=",")
   })
 
    observeEvent(input$study_cell_clicked, { 
      UserState$studies = StudiesDB[input$study_rows_selected,  "ImmPort_Study_ID"]
      initSamples()
-     
+    
      session$doBookmark()
   })
 
    observeEvent(input$DB_cell_clicked, { 
-     UserState$samples <<- UserState$DB[input$DB_rows_selected, "Sample_Set"]
+     UserState$samples = UserState$DB[input$DB_rows_selected, "Sample_Set"]
      session$doBookmark()
    })
 
   observeEvent(input$clearSamples, {
-	UserState$samples_selected <- 0
-	UserState$samples <- UserState$DB[0, "Sample_Set"]
+	UserState$samples_selected = 0
+	UserState$samples = UserState$DB[0, "Sample_Set"]
 	output$DB <- DT::renderDataTable( {
 		db = UserState$DB[ , displayed_columns ]
 		db = transformURL(db)
@@ -505,7 +506,7 @@ function(input, output, session) {
   })
 
   observeEvent(input$clearStudies, {
-	UserState$studies_selected <- 0
+	UserState$studies_selected = 0
 	UserState$studies = StudiesDB[0,  "ImmPort_Study_ID"]
 	initSamples()
 
