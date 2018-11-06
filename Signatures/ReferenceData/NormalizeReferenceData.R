@@ -1,6 +1,6 @@
 library(data.table)
 
-need = readLines("../../GeneLists/genes.all")
+need = readLines("../../GeneLists/geneIDs.all")
 
 rescale = function(b) {
   maxb = max(b)

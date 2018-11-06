@@ -54,7 +54,7 @@ table1 = [
         {"go_id":"GO:0045005", "human_readable": "maintenance of fidelity involved in DNA-dependent DNA replication"},
         {"go_id":"GO:0006282", "human_readable": "regulation of DNA repair"}
         ]},
-    { "name":"Tumor-promoting inflammation", "ngenes":84, "npathways":9, "go_terms":[
+    { "name":"Tumor promoting inflammation", "ngenes":84, "npathways":9, "go_terms":[
         {"go_id":"GO:0006954", "human_readable": "inflammatory response"},
         {"go_id":"GO:0002367", "human_readable": "cytokine production involved in immune response"},
         {"go_id":"GO:0002718", "human_readable": "regulation of cytokine production involved in immune response"},

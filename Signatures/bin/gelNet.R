@@ -13,11 +13,11 @@ library(qusage)
 
 # LOAD UP THE DATASETS
 if (!exists("need")) {
-    need = readLines("../GeneLists/genes.all")
+    need = readLines("../GeneLists/geneIDs.all")
 }
 
 if (!exists("NETWORK")) {
-    NETWORK = unique(read.table("ReferenceData/NETWORK", as.is=TRUE)[,-2])
+    NETWORK = unique(read.table("ReferenceData/NETWORK.geneID", as.is=TRUE)[,-2])
     NETWORK = NETWORK %>% filter(V1 %in% need) %>% filter(V3 %in% need)
 }
 
@@ -34,12 +34,14 @@ if (!exists("NormalizedReferenceData")) {
 }
 
 if (!exists("hallmark.genes")) {
-    hallmark.genes = read.gmt("../GeneLists/genes.gmt")
+    hallmark.genes = read.gmt("../GeneLists/geneIDs.gmt")
 }
 
 graphFor = function(genes)  {
   subnet = NETWORK %>% filter(V1 %in% genes) %>% filter(V3 %in% genes)
-  graph = as.undirected(graph.edgelist(  as.matrix(subnet) ))
+  subnetmatrix = as.matrix(subnet)
+  mode(subnetmatrix) <- 'character'
+  graph = as.undirected(graph.edgelist(subnetmatrix))
   m = as.matrix(get.adjacency(graph))
   m
 }
@@ -68,7 +70,7 @@ foreachHallmark = function(hallmark, X, y, yy, tissue, cancer) {
     weight_names <- names(model$w)[nonzero]
     names(weights) <- weight_names
 
-    output_model = paste0( "Models/", tissue, ".to.", cancer, ".", hallmark, ".signature")
+    output_model = paste0( "Models_geneID/", tissue, ".to.", cancer, ".", hallmark, ".signature")
     model$name = output_model;
     model$w = weights;
     model$numberOfGenes = length(weights);
@@ -95,8 +97,8 @@ foreachHallmark = function(hallmark, X, y, yy, tissue, cancer) {
 }
 
 foreachCancer = function(tissue, cancer, X)  {
-    n = paste0("lists/normal.", tissue, ".",  cancer)
-    t = paste0("lists/tumor.",  tissue, ".",  cancer)
+    n = paste0("lists_geneID/normal.", tissue, ".",  cancer)
+    t = paste0("lists_geneID/tumor.",  tissue, ".",  cancer)
     samples = colnames(X)
 
     normalSamples = intersect(samples, readLines( n ))
@@ -117,7 +119,7 @@ foreachCancer = function(tissue, cancer, X)  {
 # foreachCancer("Colon", "colon_adenocarcinoma", NormalizedReferenceData) 
 
 print(system.time(
-  lapply(list.files(path = "lists", pattern = "tumor.*" ), function(fn) {
+  lapply(list.files(path = "lists_geneID", pattern = "^tumor.*" ), function(fn) {
       fn = unlist(strsplit(x=fn,split = "[.]"))
       tissue = fn[2]
       cancer = fn[3]

@@ -57,13 +57,13 @@ for general  in ["GTEX", "TCGA"]:
     for phe in open("ReferenceData/" + general + ".phenotype"):
         processLine(phe, general)
 
-with open("lists/modellist", "w") as f:
+with open("lists_geneID/modellist", "w") as f:
     for pat  in pats:
         f.write(mangle(pat["base"]) + "\t" + mangle(pat["cancer"]) + "\n")
 
 
 for specific, samplelist in samplelists.iteritems():
-    with open("lists/"+specific, "w") as f:
+    with open("lists_geneID/"+specific, "w") as f:
         print("Writing sample list:",  specific);
         for l in sorted(list(samplelist)):
             f.write(l)

@@ -1,14 +1,21 @@
 jsCode = '$(".StudyDiv").prependTo(".dt-buttons")'
 
 function(request) {
-
+  shinyjs::useShinyjs()
   SelectStudy <- function()
-        DT::dataTableOutput('study')
+	div(id = "studyform",
+	    style="width:100%",
+  	    tags$a(name="Select_Studies", h3("Select Studies")),
+	    actionButton("clearStudies", "Clear All Selected"),
+            DT::dataTableOutput('study')
+        )
 
   SelectSample <- function()
-        div(style="width:100%",
-            tags$a(name="Select_Sample", h3("Select Sample")),
+        div(id = "sampleform",
+	    style="width:100%",
+            tags$a(name="Select_Samples", h3("Select Samples")),
             downloadButton("downloadSamples", "Download Samples"),
+            actionButton("clearSamples", "Clear All Selected"),
             DT::dataTableOutput('DB')
         )
 
@@ -19,7 +26,12 @@ function(request) {
 
       sidebarPanel(width=5,
         h2("Legend"),
-        uiOutput("Legend")
+	checkboxGroupInput("SelectLgColumn", "Column Select:", 
+	choices=list("Repository_Accession","Cancer_Model","Biosample_ID","Biosample_Name","Cohort","Strain","Subtype","Tissue","Cell_Type","Cell_Line","Treatment","Biosample_Description"),
+	selected=list("Repository_Accession","Cancer_Model","Biosample_ID"),
+	width = '100%',inline = TRUE),
+	br(),
+	uiOutput("Legend")
       )
      ) 
 
@@ -31,6 +43,7 @@ function(request) {
                     accept = c(
                       'text/tab-separated-values',
                       'text/plain',
+		      '.txt',
                       '.csv',
                       '.tsv'
                     )),
@@ -38,6 +51,7 @@ function(request) {
           p('Sample file:',
              a(href = 'min.txt', 'min.txt')
           ),
+	  p("(The first column could be Human/Mouse Gene Symbols or Entrez ID)", style = "font-size:13px"),
           DT::dataTableOutput('Uploaded')
       ),
       wellPanel(

@@ -1,0 +1,13 @@
+
+Rscript run_sigs.R acute_myeloid_leukemia tpm_matrix_AML_superOrtho_meta.tsv.tmp tpm_matrix_AML_superOrtho_meta.tsv.score
+
+Rscript run_sigs.R colon_adenocarcinoma tpm_matrix_colon_superOrtho_meta.tsv.tmp tpm_matrix_colon_superOrtho_meta.tsv.score
+
+Rscript run_sigs.R lung_adenocarcinoma tpm_matrix_lung-Arntl2_superOrtho_meta.tsv.tmp tpm_matrix_lung-Arntl2_superOrtho_meta.tsv.score
+
+Rscript run_sigs.R lung_adenocarcinoma tpm_matrix_lung-Cd109_superOrtho_meta.tsv.tmp tpm_matrix_lung-Cd109_superOrtho_meta.tsv.score
+
+Rscript run_sigs.R lung_adenocarcinoma tpm_matrix_lung-Pd1_superOrtho_meta.tsv.tmp tpm_matrix_lung-Pd1_superOrtho_meta.tsv.score
+
+Rscript run_sigs.R brain_lower_grade_glioma tpm_matrix_microglia_superOrtho_meta.tsv.tmp tpm_matrix_microglia_superOrtho_meta.tsv.score
+
